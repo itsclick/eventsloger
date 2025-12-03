@@ -1,0 +1,56 @@
+<?php
+
+use App\Http\Controllers\dues_controller;
+use App\Http\Controllers\group_controller;
+use App\Http\Controllers\MembershipController;
+use App\Models\Membership_model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::prefix('membership')->group(function () {
+
+    Route::post('/savemembers',[MembershipController::class,'savemembers']);
+Route::get('/getmembers',[MembershipController::class,'getmembers']);
+Route::get('/memberbyid/{id}',[MembershipController::class,'memberbyid']);
+Route::post('/updatemember/{id}',[MembershipController::class,'updatemember']);
+Route::delete('/deletemember/{id}',[MembershipController::class,'deletemember']);
+
+});
+
+
+Route::prefix('group')->group(function () {
+
+Route::post('/savegroup',[group_controller::class,'savegroup']); 
+Route::get('/allgroups',[group_controller::class,'allgroups']); 
+Route::get('/groupbyid/{id}',[group_controller::class,'groupbyid']); 
+Route::post('/updategroup/{id}',[group_controller::class,'updategroup']); 
+Route::delete('/deletegroup/{id}',[group_controller::class,'deletegroup']); 
+
+});
+
+
+Route::prefix('dues')->group(function () {
+
+Route::post('/savedues',[dues_controller::class,'savedues']);
+Route::get('/getalldues',[dues_controller::class,'getalldues']);
+Route::get('/duesbyid/{id}',[dues_controller::class,'duesbyid']);
+Route::get('/memberdues/{mid}',[dues_controller::class,'memberdues']);
+Route::delete('/deletedues/{id}',[dues_controller::class,'deletedues']);
+Route::post('/updateddues/{id}',[dues_controller::class,'updateddues']);
+
+});
