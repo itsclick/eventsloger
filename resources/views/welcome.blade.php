@@ -13,19 +13,33 @@
             <!-- App css -->
             <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
             <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
             <link rel="stylesheet" href="{{ asset('assets/css/icons.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/menu.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/shortcode-demo.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/vendors.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/jsvectormap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('assets/css/skin-church.css') }}">
+
+
+           
+            
+
+            <link rel="stylesheet" href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}">
+
+           
         <!-- Styles -->
         
         <script src="{{ asset('assets/js/app.js') }}"></script>
         <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/index.init.js') }}"></script>
+        <script src="{{ asset('assets/data/stock-prices.js') }}"></script>
+        <script src="{{ asset('assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/jsvectormap/maps/world.js') }}"></script>
+       
+
+
+        
+        
+
+
+      
 
 
 

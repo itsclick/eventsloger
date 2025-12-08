@@ -16,12 +16,7 @@
                         </div>
                         </div>
               <!-- Group ID Field -->
-              <div class="mb-3">
-                <label class="form-label">Group ID</label>
-                <input type="text"  class="form-control" v-model="groupform.gid"  placeholder="Group ID">
-                <!-- Inline error message -->
-                
-              </div>
+              
   
               <!-- Group Name Field -->
               <div class="mb-3">
@@ -47,7 +42,7 @@
   <script setup>
 import { onMounted,ref } from "vue";
 import axios from "axios";
-  import { useMemberStores } from "../store/members_store";
+  import { useMemberStores } from "../../store/members_store";
   import { storeToRefs } from 'pinia';
   import { useRouter } from "vue-router";
   
@@ -62,7 +57,7 @@ import axios from "axios";
   
   // FORM DATA
   const groupform = ref({
-    gid: "",
+   
     gname: "",
   });
   

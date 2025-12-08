@@ -31,7 +31,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="m in memberStore.membersmodel" :key="id">
+                                            <tr v-for="m in membersmodel" :key="id">
                                               <td>{{ m.id }}</td> 
                                               <td>{{ m.mid }}</td>
                                               <td>{{ m.gid }}</td>
@@ -53,7 +53,25 @@
                                             
                                             </tbody>
                                         </table><!--end /table--> 
-                                    </div><!--end /tableresponsive-->       
+                                    </div><!--end /tableresponsive-->  
+                                    
+                                    
+                                    <nav class="dataTable-pagination">
+        <Pagination :data="duesmodelpgin"  :limit="5" @pagination-change-page="getmembers" class="dataTable-pagination">
+            <template #prev-nav>
+                <span>Previous</span>
+            </template>
+            <template #next-nav>
+                <span>Next</span>
+               
+            </template>
+           
+        </Pagination>
+        Showing{{ duesmodelpgin.current_page }} of {{ duesmodelpgin.last_page }} Pages [ {{ duesmodelpgin.total }} Entries ]
+        </nav>
+
+
+
                                 </div><!--end card-body--> 
                             </div>
                             </div>
@@ -67,48 +85,68 @@
 
 
 <script setup>
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useMemberStores } from '../../store/members_store';
 
-const router = useRouter();
-const memberStore = useMemberStores();
 
-onMounted(()=>{
-    memberStore.getmembers();
-})
+
+import { onMounted } from "vue";
+  import { useMemberStores } from "../../store/members_store";
+  import { storeToRefs } from 'pinia';
+
+
+
+   //varibale here
+   const { membersmodel ,duesmodelpgin} = storeToRefs(useMemberStores());
+
+//functions below
+const {deletemember,getmembers,padduesbtn } = useMemberStores();
+
+
+
+
+
+getmembers();
+
+
+
+
+// const router = useRouter();
+// const memberStore = useMemberStores();
+
+// onMounted(()=>{
+//     memberStore.getmembers();
+// })
 
 
 
 // PAY DUES BUTTON
-const padduesbtn = (id) => {
-    router.push('/paddues/' + id);
-}
+// const padduesbtn = (id) => {
+//     router.push('/paddues/' + id);
+// }
 
 
 
 // DELETE Members
-const deletemember = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "Do you really want to delete?",
-      icon: "warning",
-      showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`/api/membership/deletemember/${id}`).then((resp) => {
-          if (resp.data.okay) {
+// const deletemember = (id) => {
+//     Swal.fire({
+//       title: "Are you sure?",
+//       text: "Do you really want to delete?",
+//       icon: "warning",
+//       showCancelButton: true,
+//     }).then((result) => {
+//       if (result.isConfirmed) {
+//         axios.delete(`/api/membership/deletemember/${id}`).then((resp) => {
+//           if (resp.data.okay) {
             
-            toast.fire({
-              icon: "success",
-              title: resp.data.msg,
-            });
-            memberStore.getmembers();
-          }
-        });
-      }
-    });
-  };
+//             toast.fire({
+//               icon: "success",
+//               title: resp.data.msg,
+//             });
+//             memberStore.getmembers();
+//           }
+//         });
+//       }
+//     });
+//   };
 
 
 </script>

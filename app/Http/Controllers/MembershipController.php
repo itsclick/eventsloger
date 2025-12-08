@@ -13,7 +13,7 @@ class MembershipController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'mid' =>'required|string|max:50|unique:member,mid',  
+            
             'gid' =>'required|string|max:255',
             'fname' =>'required|string|max:255',
             'lname' =>'required|string|max:255',
@@ -24,7 +24,7 @@ class MembershipController extends Controller
 
           ],[
               // This has our own custom error messages for each validation
-              "mid.required" => "Member ID is required",
+              
               "gid.required" => "Group ID is required",
               "fname.required" => "first Name is required",
               "lname.required" => "last Name is required",
@@ -65,7 +65,7 @@ class MembershipController extends Controller
     //getallmembers
 
     public function getmembers(){
-        $getmembers = Membership_model::all();
+        $getmembers = Membership_model::paginate(10);
         return response()->json([
             "okay"=>true,
             "msg"=>"success",

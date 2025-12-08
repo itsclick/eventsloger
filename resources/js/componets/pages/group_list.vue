@@ -63,7 +63,7 @@
   
   <script setup>
  import { onMounted } from "vue";
-  import { useMemberStores } from "../store/members_store";
+  import { useMemberStores } from "../../store/members_store";
   import { storeToRefs } from 'pinia';
   
 

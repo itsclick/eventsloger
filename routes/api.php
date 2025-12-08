@@ -43,6 +43,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::get('/groupbyid/{id}',[group_controller::class,'groupbyid']); 
         Route::post('/updategroup/{id}',[group_controller::class,'updategroup']); 
         Route::delete('/deletegroup/{id}',[group_controller::class,'deletegroup']); 
+        Route::get('/getgroups',[group_controller::class,'getgroups']); 
         
         });
         

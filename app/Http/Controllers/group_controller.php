@@ -15,13 +15,13 @@ class group_controller extends Controller
 
 
         $validator = Validator::make($request->all(), [
-                'gid' =>'required|string|max:50|unique:cgroups,gid',   
+                   
                 'gname' =>'required|string|max:255',
 
           ],
           [
               // This has our own custom error messages for each validation
-              "gid.required" => "Group ID is required",
+             
               "gname.required" => "Group Name  is required"
               
             
@@ -118,6 +118,12 @@ class group_controller extends Controller
             "data"=>$deletegroup
         ]);
     }
+
+    public function getGroups()
+{
+    return response()->json(groups_model::select('id','gid', 'gname')->get());
+}
+
 
 
     

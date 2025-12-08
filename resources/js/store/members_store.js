@@ -10,8 +10,10 @@ export const useMemberStores = defineStore("memberStore", {
         duesmodel: [],
         groupmodel: [],
         duesmodelpgin: [],
+        getgroup:[],
         duesid:'',
         formvalue:'',
+        getgroups:'',
 
         saveloader: false,
         showErrro: false,
@@ -24,15 +26,30 @@ export const useMemberStores = defineStore("memberStore", {
     // ACTIONS
     actions: {
 
+     //function to get all groups in dropdown list
+     async getgrouplist() {
+        try {
+            const res = await axios.get('/api/group/getgroups');
+            this.getgroups = res.data; // use state property
+        } catch (error) {
+            console.error('Failed to load groups:', error);
+        }
+    },
+
         // Fetch all members
+
         async getmembers(page = 1) {
             try {
                 const response = await axios.get(`/api/membership/getmembers?page=${page}`);
-                this.membersmodel = response.data.data;
+                this.membersmodel = response.data.data.data;
+                this.duesmodelpgin = response.data.data;
             } catch (error) {
-                console.error("Error loading members:", error);
+                console.error("Error loading dues:", error);
             }
         },
+
+
+        
 
 
         // SAVE member
