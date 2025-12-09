@@ -32,6 +32,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::get('/memberbyid/{id}',[MembershipController::class,'memberbyid']);
         Route::post('/updatemember/{id}',[MembershipController::class,'updatemember']);
         Route::delete('/deletemember/{id}',[MembershipController::class,'deletemember']);
+        Route::get('/countmembers',[MembershipController::class,'countmembers']);
         
         });
         
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::post('/updategroup/{id}',[group_controller::class,'updategroup']); 
         Route::delete('/deletegroup/{id}',[group_controller::class,'deletegroup']); 
         Route::get('/getgroups',[group_controller::class,'getgroups']); 
+        Route::get('/countgroup',[group_controller::class,'countgroup']); 
         
         });
         

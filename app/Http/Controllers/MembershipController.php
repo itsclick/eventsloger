@@ -143,4 +143,17 @@ class MembershipController extends Controller
                     "data"=> $deletemember
                 ]);
             }
+
+                //count total member and by gender
+            public function countmembers(){
+                $countmembers = Membership_model::count();
+                $totalmale = Membership_model::where('gender','Male')->count();
+                $totalfemale = Membership_model::where('gender','Female')->count();
+                return response ()->json([
+                   'totalmembers' =>  $countmembers,
+                   'totalmale' =>  $totalmale,
+                   'totalfemale' =>  $totalfemale
+            
+                ]);
+            }
 }

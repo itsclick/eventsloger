@@ -126,5 +126,19 @@ class group_controller extends Controller
 
 
 
+    //count total groups
+    public function countgroup(){
+        $totalgroups = groups_model::count();
+        return response ()->json([
+           'totalgroups' =>  $totalgroups,
+          
+    
+        ]);
+    }
+
+    
+
+
+
     
 }

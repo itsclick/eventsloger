@@ -14,7 +14,12 @@ export const useMemberStores = defineStore("memberStore", {
         duesid:'',
         formvalue:'',
         getgroups:'',
-
+        countmembers: 0,
+        countmale: 0,
+        countfemale: 0,
+        malePercent: 0,
+        femalePercent: 0,
+        totalgroups:0,
         saveloader: false,
         showErrro: false,
         Erromsg: "",
@@ -508,6 +513,47 @@ export const useMemberStores = defineStore("memberStore", {
                 }
             });
         },
+
+        //membership statistics 
+        async memberstats () {
+            try {
+                const response = await axios.get('/api/membership/countmembers');
+        
+                this.countmembers = response.data.totalmembers;
+                this.countmale    = response.data.totalmale;
+                this.countfemale  = response.data.totalfemale;
+        
+                // Avoid division by zero
+                if (this.countmembers > 0) {
+                    this.malePercent   = ((this.countmale / this.countmembers) * 100).toFixed(0);
+                    this.femalePercent = ((this.countfemale / this.countmembers) * 100).toFixed(0);
+                } else {
+                    this.malePercent = 0;
+                    this.femalePercent = 0;
+                }
+        
+                // ✅ NO chart logic here
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        
+
+       
+        
+
+
+        //Group statistics 
+        async groupstats () {
+            try {
+                const response = await axios.get('/api/group/countgroup');
+                this.totalgroups = response.data.totalgroups;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        
+        
 
 
 
