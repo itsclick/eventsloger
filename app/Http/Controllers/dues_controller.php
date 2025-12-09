@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\dues_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 class dues_controller extends Controller
+
+
 {
     //
 
@@ -18,7 +21,13 @@ class dues_controller extends Controller
             'gid' => 'required|string|max:255',
             'amt' => 'required|numeric',
             'pdate' => 'required|date',
-            'pmonth' => 'required|string|max:255',
+          // Unique combination of mid + pmonth
+            'pmonth' => [
+                'required',
+                Rule::unique('mdues')->where(function ($query) use ($request) {
+                    return $query->where('mid', $request->mid);
+                }),
+            ],
 
           ],[
               // This has our own custom error messages for each validation
@@ -27,13 +36,21 @@ class dues_controller extends Controller
               "gid.required" => "Group ID is required",
               "amt.required" => "Amount is required",
               "pdate.required" => "Payment Date is required",
-              "pmonth.required" => "Payment Month is required"
-            
+              "pmonth.required" => "Payment Month is required",
+
+             // Custom duplicate month message 👇
+            "pmonth.unique" => "Payment for this member already exists for this month.",
                ]);
     
-          if ($validator->fails()) {
-              return response(['errors'=>$validator->errors()->all()], 422);
-          }
+         
+
+                // ❌ if validation fails
+            if ($validator->fails()) {
+                return response()->json([
+                    "okay" => false,
+                    "msg" => $validator->errors()->first(), // Return single message
+                ], 422);
+            }
             
             // Insert
             $insert = new dues_model();

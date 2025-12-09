@@ -52,11 +52,19 @@ export const useMemberStores = defineStore("memberStore", {
                 const res = await axios.post(`/api/dues/savedues/`, fromvalue);
 
                 this.saveloader = false;
-
-                toast.fire({
-                    icon: "success",
+                Swal.fire({
+                    icon: 'success',
                     title: res.data.msg,
-                });
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
+
+                
 
                 // Redirect (CORRECT)
                 router.push("/dues");
@@ -65,12 +73,22 @@ export const useMemberStores = defineStore("memberStore", {
                 this.saveloader = false;
                 this.showErrro = true;
 
-                this.Erromsg = err.response?.data?.msg || "Failed to save member";
+                // this.Erromsg = err.response?.data?.msg ;
+                this.Erromsg = err.response?.data?.msg || "Something went wrong";
 
-                toast.fire({
-                    icon: "error",
+                Swal.fire({
+                    icon: 'error',
                     title: this.Erromsg,
-                });
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
+
+                
             }
         },
 
