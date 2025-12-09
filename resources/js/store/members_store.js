@@ -18,6 +18,7 @@ export const useMemberStores = defineStore("memberStore", {
         saveloader: false,
         showErrro: false,
         Erromsg: "",
+        toastsuccess:''
     }),
 
     // GETTERS
@@ -100,6 +101,39 @@ export const useMemberStores = defineStore("memberStore", {
                 
             }
         },
+
+
+        // Delete Group
+        async deletemember(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete?",
+                icon: "warning",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`/api/membership/deletemember/${id}`).then((resp) => {
+                        if (resp.data.okay) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: resp.data.msg,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                width: '500px',
+                                position: 'center',
+                                customClass: {
+                                  popup: 'swal-wide'
+                                }
+                              });
+                            
+                            
+                            this.getmembers(); // Refresh list
+                        }
+                    });
+                }
+            });
+        },
+
         
 
         //save membership dues
