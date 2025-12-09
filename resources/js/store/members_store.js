@@ -487,10 +487,20 @@ export const useMemberStores = defineStore("memberStore", {
                 if (result.isConfirmed) {
                     axios.delete(`/api/group/deletegroup/${id}`).then((resp) => {
                         if (resp.data.okay) {
-                            toast.fire({ 
-                                icon: "success", 
-                                title: resp.data.msg 
-                            });
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: resp.data.msg,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                width: '500px',
+                                position: 'center',
+                                customClass: {
+                                  popup: 'swal-wide'
+                                }
+                              });
+
+                            
 
                             this.allgroups(); // Refresh list
                         }
