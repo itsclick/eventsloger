@@ -13,6 +13,7 @@ import dues_list from '../componets/pages/dues_list.vue';
 import group_list from '../componets/pages/group_list.vue';
 import paddues from '../componets/pages/paydues.vue';
 import add_group from '../componets/pages/add_group.vue';
+import editmember from '../componets/pages/editmember.vue';
 
 
 
@@ -55,6 +56,7 @@ const routes=[
         {path:'/paddues/:id',name:'paddues',component:paddues,props:true,meta: { requiresAuth: true}},
         {path:'/adddues',name:'adddues',component:members_list,meta: { requiresAuth: true}},
         {path:'/addgroup',name:'addgroup',component:add_group,meta: { requiresAuth: true}},
+        {path:'/editmember/:id',name:'editmember',component:editmember,meta: { requiresAuth: true},props:true},
 
 
 

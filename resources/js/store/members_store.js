@@ -26,21 +26,81 @@ export const useMemberStores = defineStore("memberStore", {
     // ACTIONS
     actions: {
 
+
+        
         //pay dues
         async paddues(id){
             router.push(`/paddues/${id}`);
         },
         
+        //route to member edit
+        async editmember(id){
+            router.push(`/editmember/${id}`);
+        },
         //get memberby id
-        async getmemberid(id){
+        async getmemberid(id) {
             try {
-                const response = await axios.get(`/api/membership/memberbyid/${id}`);
-                this.formvalue = response.data.data;
-                
+                const res = await axios.get(`/api/membership/memberbyid/${id}`);
+                this.formvalue = res.data.data || {}; 
+                console.log("Member loaded:", this.formvalue);
             } catch (error) {
-                console.error("Error loading dues:", error);
+                console.error("Error loading member:", error);
+                this.formvalue = null;
             }
         },
+
+        //update member
+
+        async updatedmember(fromvalue,id){
+            try {
+                this.saveloader = true;
+                this.showErrro = false;
+
+                const res = await axios.post(`/api/membership/updatemember/${id}`, fromvalue);
+
+                this.saveloader = false;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: res.data.msg,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
+
+
+               
+
+                // Redirect (CORRECT)
+                router.push("/members");
+
+            } catch (err) {
+                this.saveloader = false;
+                this.showErrro = true;
+
+                this.Erromsg = err.response?.data?.msg || "Failed to save member";
+
+                Swal.fire({
+                    icon: 'error',
+                    title: this.Erromsg,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
+
+
+                
+            }
+        },
+        
 
         //save membership dues
 
@@ -152,6 +212,8 @@ export const useMemberStores = defineStore("memberStore", {
                 });
             }
         },
+
+
 
 
         // Fetch all dues
