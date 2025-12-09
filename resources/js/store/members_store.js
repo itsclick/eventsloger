@@ -285,11 +285,19 @@ export const useMemberStores = defineStore("memberStore", {
 
                 this.saveloader = false;
 
-                toast.fire({
-                    icon: "success",
+                Swal.fire({
+                    icon: 'success',
                     title: res.data.msg,
-                });
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
 
+                
                 // Redirect (CORRECT)
                 router.push("/dues");
 
@@ -298,11 +306,19 @@ export const useMemberStores = defineStore("memberStore", {
                 this.showErrro = true;
 
                 this.Erromsg = err.response?.data?.msg || "Failed to save member";
-
-                toast.fire({
-                    icon: "error",
+                Swal.fire({
+                    icon: 'error',
                     title: this.Erromsg,
-                });
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
+
+                
             }
         },
 
@@ -419,11 +435,20 @@ export const useMemberStores = defineStore("memberStore", {
 
                 this.saveloader = false;
 
-                toast.fire({
-                    icon: "success",
+                Swal.fire({
+                    icon: 'success',
                     title: res.data.msg,
-                });
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
 
+
+                
                 // Redirect (CORRECT)
                 router.push("/groups");
 
@@ -433,10 +458,20 @@ export const useMemberStores = defineStore("memberStore", {
 
                 this.Erromsg = err.response?.data?.msg || "Failed to save member";
 
-                toast.fire({
-                    icon: "error",
+                Swal.fire({
+                    icon: 'error',
                     title: this.Erromsg,
-                });
+                    showConfirmButton: false,
+                    timer: 3000,
+                    width: '500px',
+                    position: 'center',
+                    customClass: {
+                      popup: 'swal-wide'
+                    }
+                  });
+
+
+                
             }
         },
 

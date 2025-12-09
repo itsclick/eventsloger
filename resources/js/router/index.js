@@ -14,7 +14,8 @@ import group_list from '../componets/pages/group_list.vue';
 import paddues from '../componets/pages/paydues.vue';
 import add_group from '../componets/pages/add_group.vue';
 import editmember from '../componets/pages/editmember.vue';
-
+import editdues from '../componets/pages/editdues.vue';
+import editgroup from '../componets/pages/editgroup.vue';
 
 
 
@@ -29,8 +30,8 @@ import editmember from '../componets/pages/editmember.vue';
 
 // 
 // import paddues from '../componets/paydues.vue';
-// import editdues from '../componets/editdues.vue';
-// import editgroup from '../componets/editgroup.vue';
+// 
+// 
 
 
 
@@ -57,6 +58,8 @@ const routes=[
         {path:'/adddues',name:'adddues',component:members_list,meta: { requiresAuth: true}},
         {path:'/addgroup',name:'addgroup',component:add_group,meta: { requiresAuth: true}},
         {path:'/editmember/:id',name:'editmember',component:editmember,meta: { requiresAuth: true},props:true},
+        {path:'/editdues/:id',name:'editdues',component:editdues,props:true,meta: { requiresAuth: true}},
+        {path:'/editgroup/:id',name:'editgroup',component:editgroup,props:true,meta: { requiresAuth: true}},
 
 
 
@@ -85,7 +88,7 @@ const routes=[
     // 
     // 
     // {path:'/editdues/:id',name:'editdues',component:editdues,props:true,meta: { requiresAuth: true}},
-    // {path:'/editgroup/:id',name:'editgroup',component:editgroup,props:true,meta: { requiresAuth: true}},
+    // 
 
     
 
