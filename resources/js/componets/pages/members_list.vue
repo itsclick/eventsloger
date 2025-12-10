@@ -19,8 +19,8 @@
                                             <thead class="table-light">
                                             <tr>
                                                 <th>#ID</th>
-                                                <th>Member ID</th>
-                                                <th>Member of Group</th>
+                                               
+                                                
                                                 <th>First Name</th>
                                                 <th>Last Name</th>
                                                 <th>Gender</th>
@@ -32,9 +32,9 @@
                                             </thead>
                                             <tbody>
                                             <tr v-for="m in membersmodel" :key="id">
-                                              <td>{{ m.id }}</td> 
+                                             
                                               <td>{{ m.mid }}</td>
-                                              <td>{{ m.gid }}</td>
+                                              
                                               <td>{{ m.fname }}</td>
                                               <td>{{ m.lname }}</td>
                                               <td>{{ m.gender }}</td>

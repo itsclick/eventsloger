@@ -21,6 +21,8 @@ export const useMemberStores = defineStore("memberStore", {
         malePercent: 0,
         femalePercent: 0,
         totalgroups:0,
+        groupmStats:'',
+        
         saveloader: false,
         showErrro: false,
         Erromsg: "",
@@ -608,7 +610,13 @@ export const useMemberStores = defineStore("memberStore", {
             } catch (error) {
                 console.error(error);
             }
-        }
+        },
+
+        async groupMemberStats() {
+            const res = await axios.get('/api/membership/countMembersPerGroup');
+            this.groupmStats = res.data.data;
+          }
+          
         
         
 

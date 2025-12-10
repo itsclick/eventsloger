@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Membership_model;
 use Illuminate\Support\Facades\Validator;
 
@@ -156,4 +157,29 @@ class MembershipController extends Controller
             
                 ]);
             }
+
+
+          
+
+                public function countMembersPerGroup()
+                {
+                $data = DB::table('cgroups as g')
+                ->leftJoin('member as m', 'm.gid', '=', 'g.gid')
+                ->select(
+                'g.gid',
+                'g.gname',
+                DB::raw('COUNT(m.mid) as total_members')
+                )
+                ->groupBy('g.gid', 'g.gname')
+                ->get();
+
+                return response()->json([
+                'data' => $data
+                ]);
+}
+        
+
+
+
+
 }

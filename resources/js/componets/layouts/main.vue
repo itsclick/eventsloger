@@ -223,9 +223,9 @@
                             <div class="d-flex justify-content-center align-items-center thumb-lg update-icon-box  rounded-circle mx-auto">
                                 <i class="iconoir-peace-hand h3 align-self-center mb-0 text-primary"></i>
                             </div>                   
-                            <h5 class="mt-3">Mannat Themes</h5>
-                            <p class="mb-3 text-muted">Rizz is a high quality web applications.</p>
-                            <a href="javascript: void(0);" class="btn text-primary shadow-sm rounded-pill">Upgrade your plan</a>
+                            <h5 class="mt-3">24/7 Support</h5>
+                            <p class="mb-3 text-muted">info@fokastec.com</p>
+                            <a href="https://wa.link/vvqhpd" class="btn text-primary shadow-sm rounded-pill">Whatsapp us</a>
                         </div>
                     </div>
                 </div><!--end startbar-collapse-->

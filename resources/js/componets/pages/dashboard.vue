@@ -151,20 +151,18 @@
                         <div class="row align-items-center">
                             <div class="col">
                                 <h4 class="card-title">Groups Overview</h4>
+                               
                             </div>
                         </div>
-                <canvas id="memberPieChart"></canvas>
+                        <canvas id="groupBarChart" height="320"></canvas>
                         <!--end row-->
                     </div>
-                    <!--end card-header-->
-                    <div class="card-body pt-0">
-                        <div id="audience_overview" class="apex-charts"></div>
-                        
-                    </div>
-                    <!--end card-body-->
+                    
                 </div>
-                <!--end card-->
+                
             </div>
+
+
             <!--end col-->
         </div>
         <!--end row-->
@@ -289,20 +287,83 @@
 import { onMounted, ref, watch } from "vue";
 import { useMemberStores } from "../../store/members_store";
 import { storeToRefs } from "pinia";
-import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
 
-// ✅ Register PieController along with ArcElement, Tooltip, Legend
-Chart.register(PieController, ArcElement, Tooltip, Legend);
+import {
+  Chart,
+  // Controllers
+  PieController,
+  DoughnutController,
+  BarController,
+  LineController,
+  PolarAreaController,
+  RadarController,
+  BubbleController,
+  ScatterController,
+  // Elements
+  ArcElement,
+  BarElement,
+  LineElement,
+  PointElement,
+  // Scales
+  CategoryScale,
+  LinearScale,
+  RadialLinearScale,
+  LogarithmicScale,
+  TimeScale,
+  TimeSeriesScale,
+  // Plugins
+  Tooltip,
+  Legend,
+  Filler
+} from "chart.js";
+
+// ✅ Register ALL controllers, elements, scales, and plugins
+Chart.register(
+  PieController,
+  DoughnutController,
+  BarController,
+  LineController,
+  PolarAreaController,
+  RadarController,
+  BubbleController,
+  ScatterController,
+  ArcElement,
+  BarElement,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  RadialLinearScale,
+  LogarithmicScale,
+  TimeScale,
+  TimeSeriesScale,
+  Tooltip,
+  Legend,
+  Filler
+);
+
 
 // ✅ Pinia store
 const store = useMemberStores();
-const { countmembers,countmale, countfemale, malePercent, femalePercent,totalgroups } = storeToRefs(store);
-const { memberstats, groupstats } = store;
 
-// ✅ Chart instance
+const {
+    countmembers,
+  countmale,
+  countfemale,
+  malePercent,
+  femalePercent,
+  totalgroups,
+  groupmStats
+} = storeToRefs(store);
+
+const { memberstats, groupstats,groupMemberStats } = store;
+
+// ✅ Chart instances
 const memberChart = ref(null);
+const groupChart = ref(null);
 
-// ✅ Draw Pie Chart
+
+// ================= PIE CHART =================
 function drawMemberPieChart() {
   const canvas = document.getElementById("memberPieChart");
   if (!canvas) return;
@@ -342,18 +403,102 @@ function drawMemberPieChart() {
   });
 }
 
-// ✅ Load data
+// ================= BAR CHART =================
+// Predefined color palette
+const colorPalette = [
+  "#0d6efd", // blue
+  "#b22b38", // red
+  "#ffc107", // yellow
+  "#198754", // green
+  "#6f42c1", // purple
+  "#fd7e14", // orange
+  "#0dcaf0", // cyan
+  "#d63384", // pink
+  "#20c997", // teal
+  "#6610f2"  // violet
+];
+
+// Function to get color by index
+function getColor(index) {
+  return colorPalette[index % colorPalette.length];
+}
+
+// Draw bar chart
+function drawGroupBarChart(groups) {
+  const canvas = document.getElementById("groupBarChart");
+  if (!canvas || !groups || !groups.length) return;
+
+  // Destroy old chart if it exists
+  if (groupChart.value) {
+    groupChart.value.destroy();
+  }
+
+  // Assign a color for each group based on its index
+  const colors = groups.map((_, index) => getColor(index));
+
+  groupChart.value = new Chart(canvas, {
+    type: "bar", // bar chart
+    data: {
+      labels: groups.map(g => g.gname),
+      datasets: [
+        {
+          label: "Members per Group",
+          data: groups.map(g => g.total_members),
+          backgroundColor: colors, // different color per bar
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: {
+          callbacks: {
+            label(context) {
+              return `${context.dataset.label}: ${context.raw}`;
+            },
+          },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { precision: 0 },
+        },
+      },
+    },
+  });
+}
+
+
+
+
+
+
+
+
+
+// ================= LOAD DATA =================
+// Draw initially after data loads
 onMounted(async () => {
   await memberstats();
   await groupstats();
-  drawMemberPieChart(); // draw after data loaded
+  await groupMemberStats();
+
+  drawMemberPieChart(); // initial draw
+  if (groupmStats.value.length) drawGroupBarChart(groupmStats.value); // draw bar chart
 });
 
-// ✅ Watch for reactive updates (optional)
-watch([countmale, countfemale], () => {
+// Reactive watcher for pie chart
+watch([countmale, countfemale], ([newMale, newFemale]) => {
   drawMemberPieChart();
 });
+
+
+
+
 </script>
+
 
 
 

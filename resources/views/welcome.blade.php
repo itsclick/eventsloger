@@ -32,6 +32,16 @@
         <script src="{{ asset('assets/data/stock-prices.js') }}"></script>
         <script src="{{ asset('assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
         <script src="{{ asset('assets/libs/jsvectormap/maps/world.js') }}"></script>
+        <script src="{{ asset('assets/libs/chart.js/chart.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pages/chartjs.init.js') }}"></script>
+
+
+
+
+
+
+
+        
        
 
 

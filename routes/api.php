@@ -33,11 +33,14 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::post('/updatemember/{id}',[MembershipController::class,'updatemember']);
         Route::delete('/deletemember/{id}',[MembershipController::class,'deletemember']);
         Route::get('/countmembers',[MembershipController::class,'countmembers']);
+        Route::get('/countMembersPerGroup', [MembershipController::class, 'countMembersPerGroup']);
+        
+
         
         });
         
         
-        Route::prefix('group')->group(function () {
+        Route::prefix('group')->group(function () {   
         
         Route::post('/savegroup',[group_controller::class,'savegroup']); 
         Route::get('/allgroups',[group_controller::class,'allgroups']); 
@@ -46,6 +49,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::delete('/deletegroup/{id}',[group_controller::class,'deletegroup']); 
         Route::get('/getgroups',[group_controller::class,'getgroups']); 
         Route::get('/countgroup',[group_controller::class,'countgroup']); 
+        
         
         });
         

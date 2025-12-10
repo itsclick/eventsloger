@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\groups_model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -135,6 +135,24 @@ class group_controller extends Controller
     
         ]);
     }
+
+
+
+
+   
+
+    // public function countMembersPerGroup()
+    // {
+    //     $groups = groups_model::withCount('members')->get();
+    
+    //     return response()->json([
+    //         'data' => $groups
+    //     ]);
+    // }
+
+   
+    
+
 
     
 
