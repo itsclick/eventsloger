@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\accountManager;
 use App\Http\Controllers\dues_controller;
 use App\Http\Controllers\group_controller;
 use App\Http\Controllers\login_controller;
@@ -65,11 +66,19 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         
         });
 
-
+        
         Route::prefix('users')->group(function () {
         
             Route::post('/saveusers',[login_controller::class,'saveusers']);
             Route::post('/login',[login_controller::class,'login']);
+            Route::get('/getallusers',[accountManager::class,'getallusers']);
+            Route::get('/userpermision/{user_id}',[accountManager::class,'userpermision']);
+            Route::post('/updatepermission',[accountManager::class,'updatepermission']);
+            
+
+
+
+            
           
             
             });

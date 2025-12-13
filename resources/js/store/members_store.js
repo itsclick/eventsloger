@@ -12,6 +12,8 @@ export const useMemberStores = defineStore("memberStore", {
         groupmodel: [],
         duesmodelpgin: [],
         getgroup:[],
+        getallusersmodel:[],
+        userpermission:[],
         duesid:'',
         formvalue:'',
         getgroups:'',
@@ -34,6 +36,73 @@ export const useMemberStores = defineStore("memberStore", {
 
     // ACTIONS
     actions: {
+
+//get memberby id
+async getuserpermission(user_id) {
+    try {
+        const res = await axios.get(`/api/users/userpermision/${user_id}`);
+        this.userpermission = res.data.data || {}; 
+       
+    } catch (error) {
+        console.error("Error loading member:", error);
+        this.userpermission = null;
+    }
+},
+
+
+
+async updatepermision(fromvalue){
+    try {
+        this.saveloader = true;
+        this.showErrro = false;
+
+        const res = await axios.post(`/api/users/updatepermission`, fromvalue);
+
+        this.saveloader = false;
+
+        Swal.fire({
+            icon: 'success',
+            
+            title: res.data.msg,
+            showConfirmButton: false,
+            timer: 3000,
+            width: '500px',
+            position: 'center',
+            customClass: {
+              popup: 'swal-wide'
+            }
+          });
+
+
+       
+
+        // Redirect (CORRECT)
+        router.push("/users");
+
+    } catch (err) {
+        this.saveloader = false;
+        this.showErrro = true;
+
+        this.Erromsg = err.response?.data?.msg || "Failed to save member";
+
+        Swal.fire({
+            icon: 'error',
+            title: this.Erromsg,
+            showConfirmButton: false,
+            timer: 3000,
+            width: '500px',
+            position: 'center',
+            customClass: {
+              popup: 'swal-wide'
+            }
+          });
+
+
+        
+    }
+},
+
+
 
 
         
@@ -210,11 +279,21 @@ export const useMemberStores = defineStore("memberStore", {
 
     
         // Fetch all members
-
         async getmembers(page = 1) {
             try {
                 const response = await axios.get(`/api/membership/getmembers?page=${page}`);
                 this.membersmodel = response.data.data.data;
+                this.duesmodelpgin = response.data.data;
+            } catch (error) {
+                console.error("Error loading dues:", error);
+            }
+        },
+
+        // Fetch all system users
+        async getallusers(page = 1) {
+            try {
+                const response = await axios.get(`/api/users/getallusers?page=${page}`);
+                this.getallusersmodel = response.data.data.data;
                 this.duesmodelpgin = response.data.data;
             } catch (error) {
                 console.error("Error loading dues:", error);

@@ -16,6 +16,12 @@ import add_group from '../componets/pages/add_group.vue';
 import editmember from '../componets/pages/editmember.vue';
 import editdues from '../componets/pages/editdues.vue';
 import editgroup from '../componets/pages/editgroup.vue';
+import users from '../componets/pages/users_list.vue';
+import permission from '../componets/pages/permission.vue';
+
+
+
+
 
 
 
@@ -60,6 +66,10 @@ const routes=[
         {path:'/editmember/:id',name:'editmember',component:editmember,meta: { requiresAuth: true},props:true},
         {path:'/editdues/:id',name:'editdues',component:editdues,props:true,meta: { requiresAuth: true}},
         {path:'/editgroup/:id',name:'editgroup',component:editgroup,props:true,meta: { requiresAuth: true}},
+        {path:'/users',name:'users',component:users,meta: { requiresAuth: true}},
+
+        {path:'/permission/:user_id',name:'permission',component:permission,props:true,meta: { requiresAuth: true}},
+
 
 
 

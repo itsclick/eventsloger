@@ -208,6 +208,18 @@
                                
                                 
                             </li>
+
+                            <li class="nav-item">
+                                <router-link to="/users">
+                                    <span class="nav-link"  data-bs-toggle="collapse" role="button"
+                                    aria-expanded="false" aria-controls="sidebarElements">
+                                    <i class="iconoir-compact-disc menu-icon"></i>
+                                    <span>Users</span>
+                                </span>
+                                </router-link>
+                               
+                                
+                            </li>
                             
                             
                            
