@@ -77,6 +77,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::post('/updatepermission',[accountManager::class,'updatepermission']);
             Route::get('/getallmenus',[menusController::class,'getallmenus']);
             Route::post('/savemenus',[menusController::class,'savemenus']);
+            Route::delete('/deletemenu/{id}',[menusController::class,'deletemenu']);
             
 
 

@@ -39,9 +39,9 @@
                 
                         <td>
 
-                        <i class="fas fa-pen fs-16 me-1 " @click="editgroup(m.id)" title="Edit"></i>  &nbsp;
+                       
 
-                        <i class="fas fa-trash 16-18 me-1 " @click="deletegroup(m.id)" title="Delete"></i> 
+                        <i class="fas fa-trash 16-18 me-1 " @click="deletemenubtn(m.id)" title="Delete"></i> 
                   </td>
                 </tr>
               </tbody>
@@ -79,7 +79,7 @@
   const { sysmenus ,duesmodelpgin,getgroupbyid} = storeToRefs(useMemberStores());
 
   //functions below
-  const { getallsysmenus,deletegroup,allgroups,editgroup } = useMemberStores();
+  const { getallsysmenus, deletemenubtn  } = useMemberStores();
   
  
  

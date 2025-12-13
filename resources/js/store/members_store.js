@@ -691,6 +691,40 @@ async updatepermision(fromvalue){
         },
 
 
+        // Delete system menus
+        async deletemenubtn(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete?",
+                icon: "warning",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`/api/users/deletemenu/${id}`).then((resp) => {
+                        if (resp.data.okay) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: resp.data.msg,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                width: '500px',
+                                position: 'center',
+                                customClass: {
+                                  popup: 'swal-wide'
+                                }
+                              });
+
+                            
+
+                            this.getallsysmenus(); // Refresh list
+                        }
+                    });
+                }
+            });
+        },
+
+
         // Delete Group
         async deletegroup(id) {
             Swal.fire({

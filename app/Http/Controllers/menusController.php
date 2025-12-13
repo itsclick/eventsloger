@@ -76,4 +76,25 @@ class menusController extends Controller
             "data"=>$getmembers
         ]);
     }
+
+
+
+    //delete menus
+
+    public function deletemenu($id){
+        $deletemenu = menus::find($id);
+        if(!$deletemenu){
+            return response()->json([
+                "okay"=>false,
+                "msg"=>"No Menu ID found",
+                "data"=>null
+            ],404);
+        }
+        $deletemenu->delete();
+        return response()->json([
+            "okay"=>true,
+            "msg"=>"Group data deleted successully",
+            "data"=>$deletemenu
+        ]);
+    }
 }
