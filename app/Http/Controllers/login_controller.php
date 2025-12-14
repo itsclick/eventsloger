@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\loginModel;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+
 
 class login_controller extends Controller
 {
@@ -16,75 +20,60 @@ class login_controller extends Controller
 
 
 
-                            public function login(Request $request)
-                            {
-
-
-                                $validator = Validator::make(
-                                    $request->all(),
-                                    [
-                                        "username" => "required",
-                                        "password" => "required",
-                                    ]
-                                );
-
-                                // Payload to be sent with response
-                                $payload = [
-                                    "ok" => false,
-                                ];
-
-                            if ($validator->fails()) {
-                                    $payload["message"] = "Login failed.";
-                                    $payload["errors"] = [
-                                        "message" => join(" ", $validator->errors()->all()),
-                                    
-                                    ];
-                                    return response($payload,422);
-                                }
-
-                                $authenticatedUser = loginModel::where("username", strtoupper($request->username))
-                                                            
-                                                            ->select(['*'])
-                                                            ->first();
-
-
-                                // Return if no user is found
-                                if (empty($authenticatedUser)) {
-                                    $payload["message"] = "The provided credentials are incorrect";
-                                    return response()->json($payload,422);
-                                }
-
-                                // Return if password is invalid
-                                if (!Hash::check($request->password, $authenticatedUser->password)) {
-                                    $payload["message"] = "The provided credentials are incorrect.";
-                                    return response()->json($payload, 422);
-                                }
-
-                                try {
-                                     // Generate secure unique token
-                                    $token = bin2hex(random_bytes(32));
-                            
-                                    $authenticatedUser->last_login_at = Carbon::now()->toDateTimeString();
-                                    $authenticatedUser->last_login_ip = $request->getClientIp();
-                                    $authenticatedUser->login_token =  $token;
-                                    $authenticatedUser->save();
-
-                                    return response(['user' => $authenticatedUser, 'access_token' => $token], 200);
-
-                                } catch (\Exception $th) {
-                                        return response()->json([
-                                            "ok" => false,
-                                            "msg" => "An internal error occured. Reset failed",
-                                            "error" => [
-                                                "msg" => $th->__toString(),
-                                                "fix" => "Error is explained in fix",
-                                            ]
-                                        ]);
-                                }
-
-
-
-                            }
+    public function login(Request $request)
+    {
+        // 1️⃣ Validate incoming request
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+    
+        // 2️⃣ Find the user by username (case-sensitive)
+        $user = User::where('username', $request->username)->first();
+    
+        // 3️⃣ Check if user exists and password matches
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Invalid login credentials'
+            ], 401);
+        }
+    
+        // 4️⃣ Generate a secure token for this session
+        $token = bin2hex(random_bytes(32));
+    
+        // 5️⃣ Save the token to the user record
+        $user->login_token = $token;
+        $user->last_login_at = now();
+        $user->last_login_ip = $request->ip();
+        $user->save();
+    
+        // 6️⃣ Get menus assigned to this user
+        $permissions = DB::table('menus as m')
+            ->join('permission as p', 'm.menu_id', '=', 'p.menu_id')
+            ->where('p.user_id', $user->user_id) 
+            ->select(
+                'm.menu_id',
+                'm.menu_name',
+                'm.des',
+                'm.menu_link',
+                'm.menu_icon',
+                'p.menu_add',
+                'p.menu_edit',
+                'p.menu_delete',
+                'p.menu_details'
+            )
+            ->get();
+    
+        // 7️⃣ Return user data, token, and permissions
+        return response()->json([
+            'ok' => true,
+            'access_token' => $token,
+            'user' => $user,
+            'permissions' => $permissions
+        ]);
+    }
+    
 
 
 

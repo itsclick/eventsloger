@@ -5,7 +5,7 @@
     <html lang="en" dir="ltr" data-startbar="dark" data-bs-theme="light">
     
     
-    <!-- Mirrored from mannatthemes.com/rizz/default-dark/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 06 Feb 2025 09:54:21 GMT -->
+   
     <head>
         
     
@@ -47,6 +47,7 @@
                         </li> 
                         <li class="mx-3 welcome-text">
                             <h3 class="mb-0 fw-bold text-truncate">Welcome {{ fullname }}</h3>
+                            
                             
                             <!-- <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">Here's your overview this week.</h6> -->
                         </li>                   
@@ -178,12 +179,15 @@
 
                             
                            
-                          
+                                   
+
+                                    <!-- Loop through allowed menus only -->
+                                    
 
 
-
-
-                            <li class="nav-item" v-for="menu in sysmenus" :key="menu.id">
+                                   
+                                    
+                                    <li class="nav-item" v-for="menu in menus" :key="menu.id">
                            <router-link :to="menu.menu_link">
                                 <span class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarElements" >
                                     <i class="iconoir-home-simple menu-icon"></i>
@@ -191,6 +195,13 @@
                                 </span>
                             </router-link>
                             </li>
+
+
+
+                               
+
+
+                            
                             
                             
                            
@@ -205,7 +216,7 @@
                         <div class="update-msg text-center"> 
                             <div class="d-flex justify-content-center align-items-center thumb-lg update-icon-box  rounded-circle mx-auto">
                                 <i class="iconoir-peace-hand h3 align-self-center mb-0 text-primary"></i>
-                            </div>                   
+                            </div>              
                             <h5 class="mt-3">24/7 Support</h5>
                             <p class="mb-3 text-muted">info@fokastec.com</p>
                             <a href="https://wa.link/vvqhpd" class="btn text-primary shadow-sm rounded-pill">Whatsapp us</a>
@@ -273,6 +284,7 @@
     import { useRouter } from "vue-router";
     import { useMemberStores } from "../../store/members_store";
     import { storeToRefs } from 'pinia';
+   
 
 
   //varibale here
@@ -284,7 +296,10 @@
  
 
     const router = useRouter();
-    
+   
+
+// Get allowed menus
+const menus = Auth.getMenus();
 
     const fullname=ref(Auth.user.username)
 
