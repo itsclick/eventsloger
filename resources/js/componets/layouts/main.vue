@@ -323,8 +323,8 @@
                                 </a>
 
                                 <!-- Logout -->
-                                <a href="javascript:void(0);" class="dropdown-item text-danger fw-semibold">
-                                    <i class="ri ri-logout-box-line me-1 fs-lg align-middle"></i>
+                                <a href="" class="dropdown-item text-danger fw-semibold" @click="logout">
+                                    <i class="ri ri-logout-box-line me-1 fs-lg align-middle" ></i>
                                     <span class="align-middle">Log Out</span>
                                 </a>
                             </div>
@@ -354,56 +354,9 @@
     </button>
 
     <!-- Full Sidebar Menu Close Button -->
-    <button class="button-close-offcanvas">
-        <i class="ri ri-menu-line align-middle"></i>
-    </button>
+    
 
-    <div class="scrollbar" data-simplebar="">
-        <div id="user-profile-condensed" class="sidenav-user">
-            <div class="dropdown">
-                <a class="dropdown-toggle drop-arrow-none link-reset sidenav-user-set-icon" data-bs-toggle="dropdown" data-bs-offset="0,12" href="#!" aria-haspopup="false" aria-expanded="false">
-                    <span class="d-flex align-items-center gap-2">
-                        <img src="@/assets/images/users/user-1.jpg" alt="user-image" class="rounded-circle avatar-md" />
-                        <span>
-                            <span class="sidenav-user-name fw-bold">David Dev</span>
-                            <span class="fs-12 fw-semibold" data-lang="user-role">Admin Head</span>
-                        </span>
-                        <i class="ri ri-arrow-down-s-line align-middle ms-auto"></i>
-                    </span>
-                </a>
-
-                <div class="dropdown-menu">
-                    <!-- Header -->
-                    <div class="dropdown-header noti-title">
-                        <h6 class="text-overflow m-0">Welcome back!</h6>
-                    </div>
-
-                    <!-- My Profile -->
-                    <a href="#!" class="dropdown-item">
-                        <i class="ri ri-user-line me-1 fs-lg align-middle"></i>
-                        <span class="align-middle">Profile</span>
-                    </a>
-
-                    <!-- Settings -->
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <i class="ri ri-settings-line me-1 fs-lg align-middle"></i>
-                        <span class="align-middle">Account Settings</span>
-                    </a>
-
-                    <!-- Lock -->
-                    <a href="auth-lock-screen.html" class="dropdown-item">
-                        <i class="ri ri-lock-line me-1 fs-lg align-middle"></i>
-                        <span class="align-middle">Lock Screen</span>
-                    </a>
-
-                    <!-- Logout -->
-                    <a href="javascript:void(0);" class="dropdown-item text-danger fw-semibold">
-                        <i class="ri ri-logout-box-line me-1 fs-lg align-middle"></i>
-                        <span class="align-middle">Log Out</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+    
 
         <!--- Sidenav Menu -->
         <div id="sidenav-menu">
@@ -478,7 +431,8 @@
                 </div>
 
 
-                
+              <router-view></router-view>
+               
 
                
 
@@ -487,33 +441,21 @@
             </div>
             <!-- container -->
 
-            <!-- Footer Start -->
-            <footer class="footer">
+                <!-- Footer Start -->
+                <footer class="footer">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            ©
-                            
-                            Dhonu By <span class="fw-semibold">Coderthemes</span>
-                        </div>
-                    </div>
+                <div class="row">
+                <div class="col-12 text-center">
+                © Event Loger <span class="fw-semibold">Event Loger</span>
                 </div>
-            </footer>
-            <!-- end Footer -->
+                </div>
+                </div>
+                </footer>
+                <!-- end Footer -->
 
         </div>
 
-        <!-- ============================================================== -->
-        <!-- End of Main Content -->
-        <!-- ============================================================== -->
-    </div>
-    <!-- END wrapper -->
-
-   
-            
-       
-    
-    <!-- end offcanvas--> <!-- Vendor js -->
+      
 
 </body>
 
@@ -547,13 +489,10 @@
    
 
 
-  //varibale here
-//   const {  sysmenus,user } =storeToRefs(useMemberStores());
+
   //functions below
   const {  memberstats } = useMemberStores();
- 
-
-
+ //viariables here
   const {  user_id,menupermission,getURL,getAccess,username } =storeToRefs(menustore());
   //functions below
   const { usermenumain } = menustore();
@@ -562,14 +501,6 @@
 
     const router = useRouter();
    
-    
-
-// Get allowed menus
-// const menus = Auth.getMenus();
-
-// const fullname=ref(Auth.user.username)
-
-// const username = ref(Auth.user.username)
 
   
     memberstats();

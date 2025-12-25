@@ -1,55 +1,53 @@
 <template>
-    <form>
-      <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-8">
-          <h5>Adding New system menu </h5>
-  
-          <div class="card">
-            <div class="card-body pt-0">
-  <!-- {{ Erromsg }} -->
+  <div class="container-xxl">
+        <div class="row">
+          <div class="col-xl-8">
+            <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Add system menu</h4>
+                                    </div>
 
-                    
-              <!-- Group ID Field -->
-              
-  
-              <!-- Group Name Field -->
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                
+                <input type="text"  class="form-control" v-model="groupform.menu_name" placeholder="Menu Name">
+              </div>
               <div class="mb-3">
-                <label class="form-label">Menu Name</label>
-                <input type="text"  class="form-control" v-model="groupform.menu_name"  placeholder="Group Name">
+                
+                <input type="text"  class="form-control" v-model="groupform.menu_link" placeholder="Menu Link / Route">
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Menu Link / Route</label>
-                <input type="text"  class="form-control" v-model="groupform.menu_link"  placeholder="Group Name">
+               
+                <input type="text"  class="form-control" v-model="groupform.menu_icon" placeholder="Menu Icon">
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Menu Icon</label>
-                <input type="text"  class="form-control" v-model="groupform.menu_icon"  placeholder="Group Name">
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Description</label>
-                <input type="text"  class="form-control" v-model="groupform.des"  placeholder="Group Name">
+                
+                <input type="text"  class="form-control" v-model="groupform.des" placeholder="Description">
               </div>
   
               <!-- Save Button -->
               <button  
                 type="button"
-                class="btn btn-primary"  @click="savemenubtn"> Save Menu</button>
+                class="btn btn-success"  @click="savemenubtn"> Save Menu</button>
   
-            </div>
+           
+
+                                        
+                                    </div>
+                                </div>
           </div>
-  
         </div>
       </div>
-    </form>
+    
   </template>
   
   <script setup>
 import { onMounted,ref } from "vue";
 import axios from "axios";
   import { useMemberStores } from "../../store/members_store";
+  import { useSaveDataStore } from "../../store/SaveDataStore";
   import { storeToRefs } from 'pinia';
   import { useRouter } from "vue-router";
   
@@ -57,10 +55,10 @@ import axios from "axios";
 
 
   //varibale here
-  const { saveloader,showErrro, Erromsg} = storeToRefs(useMemberStores());
+  const { saveloader,showErrro, Erromsg} = storeToRefs(useSaveDataStore());
 
   //functions below
-  const {  savemenus } = useMemberStores();
+  const {  savemenus } = useSaveDataStore();
   
   // FORM DATA
   const groupform = ref({

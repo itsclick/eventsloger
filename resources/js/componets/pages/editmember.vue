@@ -39,6 +39,7 @@
                 </div>
                 <div class="mb-3">
               <label class="form-label">Member Image</label>
+              
               <input type="file"  class="form-control" accept="image/*"  @change="onImageChange"/><br>
               <img :src="`/storage/${formvalue.image}`" class="thumb-xxl rounded-circle"/>
               </div>

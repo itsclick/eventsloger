@@ -570,57 +570,57 @@ async updatepermision(fromvalue){
 
 
         //SAVE savemenu 
-        async savemenus(groupform) {
-            try {
-                this.saveloader = true;
-                this.showErrro = false;
+        // async savemenus(groupform) {
+        //     try {
+        //         this.saveloader = true;
+        //         this.showErrro = false;
 
-                const res = await axios.post("/api/users/savemenus", groupform);
+        //         const res = await axios.post("/api/users/savemenus", groupform);
 
-                this.saveloader = false;
+        //         this.saveloader = false;
 
 
-                Swal.fire({
-                    icon: 'success',
+        //         Swal.fire({
+        //             icon: 'success',
                     
-                    title: res.data.msg,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    width: '500px',
-                    position: 'center',
-                    customClass: {
-                      popup: 'swal-wide'
-                    }
-                  });
+        //             title: res.data.msg,
+        //             showConfirmButton: false,
+        //             timer: 3000,
+        //             width: '500px',
+        //             position: 'center',
+        //             customClass: {
+        //               popup: 'swal-wide'
+        //             }
+        //           });
 
 
                
 
-                // Redirect (CORRECT)
-                router.push("/menus");
+        //         // Redirect (CORRECT)
+        //         router.push("/menus");
 
-            } catch (err) {
-                this.saveloader = false;
-                this.showErrro = true;
+        //     } catch (err) {
+        //         this.saveloader = false;
+        //         this.showErrro = true;
 
-                this.Erromsg = err.response?.data?.msg || "Failed to save Group Information";
+        //         this.Erromsg = err.response?.data?.msg || "Failed to save Group Information";
 
-                Swal.fire({
-                    icon: 'success',
+        //         Swal.fire({
+        //             icon: 'error',
                     
-                    title: this.Erromsg,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    width: '500px',
-                    position: 'center',
-                    customClass: {
-                      popup: 'swal-wide'
-                    }
-                  });
+        //             title: this.Erromsg,
+        //             showConfirmButton: false,
+        //             timer: 3000,
+        //             width: '500px',
+        //             position: 'center',
+        //             customClass: {
+        //               popup: 'swal-wide'
+        //             }
+        //           });
 
                 
-            }
-        },
+        //     }
+        // },
 
 
         //get group edit page
@@ -702,38 +702,7 @@ async updatepermision(fromvalue){
         },
 
 
-        // Delete system menus
-        async deletemenubtn(id) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "Do you really want to delete?",
-                icon: "warning",
-                showCancelButton: true,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.delete(`/api/users/deletemenu/${id}`).then((resp) => {
-                        if (resp.data.okay) {
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: resp.data.msg,
-                                showConfirmButton: false,
-                                timer: 3000,
-                                width: '500px',
-                                position: 'center',
-                                customClass: {
-                                  popup: 'swal-wide'
-                                }
-                              });
-
-                            
-
-                            this.getallsysmenus(); // Refresh list
-                        }
-                    });
-                }
-            });
-        },
+       
 
 
         // Delete Group

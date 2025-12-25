@@ -2,22 +2,16 @@
     <div class="col-md-12 col-lg-12">
       <div class="card">
         <div class="card-header">
-          <div class="row align-items-center">
-            <div class="col">
-              <h4 class="card-title">User's List</h4>
-            </div>
-  
-            <!--  Show button only if user has menu_add permission for "users" -->
-            <div class="col text-end" v-if="menuAccess.menu_add">
-              <router-link to="addgroup">
+          <h4 class="card-title">Listing System Users</h4>
+          <div class="col text-end">
+             <router-link to="adduser">
                 <button type="button" class="btn btn-success">+ Add user</button>
               </router-link>
-            </div>
-
-            
-  
           </div>
-        </div>
+          </div>
+
+       
+       
       
   
         <div class="card-body pt-0">
@@ -35,7 +29,8 @@
                   <td>{{ m.user_id }}</td>
                   <td>{{ m.username }}</td>
                   <td>
-                    <i class="fas fas fa-shield-alt fs-16 me-1"
+                    
+                    <i class="ri-shield-fill"
                        @click="permitionbnt(m.user_id)"
                        title="Add permission"></i>
                   </td>

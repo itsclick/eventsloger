@@ -1,25 +1,31 @@
 <template>
+
+  
+
+
+
     <!-- {{ sysmenus }} -->
     <div class="col-md-12 col-lg-12">
       <div class="card">
+
         <div class="card-header">
-          <div class="row align-items-center">
-            <div class="col">
-              <h4 class="card-title">Menu List</h4>
-            </div>
-            <div class="col text-end">
-              <router-link to="/addmenu">
+          <h4 class="card-title">Listing System Menus</h4>
+          <div class="col text-end">
+             <router-link to="/addmenu">
                 <button type="button" class="btn btn-success">+ Add Menu</button>
               </router-link>
-            </div>
           </div>
-        </div>
+          </div>
+
+
+
+        
+          
   
-        <div class="card-body pt-0">
-          <div class="table-responsive">
-            <table class="table table-striped mb-0">
-              <thead class="table-dark">
-                <tr>
+        <div class="table-responsive">
+                                    <table class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                            <tr class="text-uppercase fs-xxs">
                   
                   <th>#ID</th>
                   <th>Menu Name</th>
@@ -41,8 +47,8 @@
 
                        
                           
-                       
-                        <i class="fas fa-trash fs-16 me-1" 
+                      
+                        <i class="ri-delete-bin-5-fill" 
                         :class="{ 'text-muted': !getAccess.menu_delete }" 
                         :style="{ cursor: getAccess.menu_delete ? 'pointer' : 'not-allowed' }"
                         @click="getAccess.menu_delete && deletemenubtn(m.id)" title="Delete"></i>
@@ -52,10 +58,19 @@
               </tbody>
             </table>
           </div>
+          
+
+
+          <div class="card-footer border-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div data-table-pagination-info="products"></div>
+                                        <div data-table-pagination></div>
+                                    </div>
+                                </div>
   
           <!-- Pagination -->
-          <nav class="dataTable-pagination">
-        <Pagination :data="duesmodelpgin"  :limit="5" @pagination-change-page="getallsysmenus" class="dataTable-pagination">
+          <nav class="d-flex justify-content-between align-items-center">
+        <Pagination :data="sysmenuspaginate"  :limit="5" @pagination-change-page="getallsysmenus" class="d-flex justify-content-between align-items-center">
             <template #prev-nav>
                 <span>Previous</span>
             </template>
@@ -65,45 +80,41 @@
             </template>
            
         </Pagination>
-        Showing{{ duesmodelpgin.current_page }} of {{ duesmodelpgin.last_page }} Pages [ {{ duesmodelpgin.total }} Entries ]
+        Showing{{ sysmenuspaginate.current_page }} of {{ sysmenuspaginate.last_page }} Pages [ {{ sysmenuspaginate.total }} Entries ]
         </nav>
         </div>
       </div>
-    </div>
+    
   </template>
   
-  <script setup>
- import { onMounted } from "vue";
-  import { useMemberStores } from "../../store/members_store";
-  import { storeToRefs } from 'pinia';
-  import Auth from '../../store/auth.js';
-  import { menustore } from "../../store/menus.js";
-  
+ <script setup>
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+
+import { useViewDataStore } from "../../store/ViewDataStore";
+import { useDeleteDataStore } from "../../store/DeleteDataStore";
+import { menustore } from "../../store/menus";
+
+// store instances
+const viewStore = useViewDataStore();
+const deleteStore = useDeleteDataStore();
+const menuStore = menustore();
+
+// state / getters
+const { sysmenus, sysmenuspaginate } = storeToRefs(viewStore);
+const { getAccess } = storeToRefs(menuStore);
+
+// actions
+const { getallsysmenus } = viewStore;
+const { deletemenubtn } = deleteStore;
 
 
-
-  //varibale here
-  const { sysmenus ,duesmodelpgin,getgroupbyid} = storeToRefs(useMemberStores());
-
-  //functions below
-  const { getallsysmenus, deletemenubtn  } = useMemberStores();
-
- //varibale here
-  const { getAccess} = storeToRefs(menustore());
-
-
-  
- 
- 
-
-
+// lifecycle
+onMounted(() => {
   getallsysmenus();
+});
+</script>
 
-  
-  
-  
-  
-  </script>
   
   <style scoped>
 

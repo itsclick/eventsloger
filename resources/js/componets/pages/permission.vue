@@ -21,6 +21,8 @@
           <th>Edit</th>
           <th>Delete</th>
           <th>Details</th>
+           <th>Add Form</th>
+           <th>Print</th>
         </tr>
       </thead>
 
@@ -45,6 +47,10 @@
           <td>
             <input type="checkbox" v-model="alldetails" :true-value="1" :false-value="0" id="alldetails"  class="form-check-input"/> <label for="alldetails">Check All</label>
           </td>
+          <td>
+            <input type="checkbox" v-model="alladdform" :true-value="1" :false-value="0" id="alladdform"  class="form-check-input"/> <label for="alladdform">Check All</label>
+          </td>
+          <td> <input type="checkbox" v-model="allprintbtn" :true-value="1" :false-value="0" id="allprintbtn"  class="form-check-input"/> <label for="allprintbtn">Check All</label></td>
         </tr>
 
         <!-- PERMISSION ROWS -->
@@ -66,6 +72,10 @@
           </td>
 
           <td><input type="checkbox" v-model="m.menu_details" :true-value="1" :false-value="0" :id="`4_${m.menu_id}`" class="form-check-input" />
+          </td>
+          <td><input type="checkbox" v-model="m.addform" :true-value="1" :false-value="0" :id="`5_${m.menu_id}`" class="form-check-input" />
+          </td>
+          <td><input type="checkbox" v-model="m.printbtn" :true-value="1" :false-value="0" :id="`6_${m.printbtn}`" class="form-check-input" />
           </td>
         </tr>
       </tbody>
@@ -99,6 +109,8 @@ const alldetails = ref(0);
 const allAdd = ref(0);
 const allEdit = ref(0);
 const allDelete = ref(0);
+const alladdform = ref(0);
+const allprintbtn = ref(0);
 
 
 
@@ -123,7 +135,9 @@ const props = defineProps({
             row.menu_details === 1 ||
             row.menu_add === 1 ||
             row.menu_edit === 1 ||
-            row.menu_delete === 1
+          row.menu_delete === 1 ||
+          row.addform === 1 ||
+            row.printbtn===1
         );
     });
 
@@ -139,6 +153,12 @@ userpermission.value.forEach(row => row.menu_delete = newVal);
 });
 watch(alldetails, (newVal) => {
 userpermission.value.forEach(row => row.menu_details = newVal);
+});
+watch(alladdform, (newVal) => {
+userpermission.value.forEach(row => row.addform = newVal);
+});
+watch(allprintbtn, (newVal) => {
+userpermission.value.forEach(row => row.printbtn = newVal);
 });
 
 function setpermitionbtn(){

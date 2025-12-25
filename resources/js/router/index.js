@@ -1,5 +1,3 @@
-
-
 import { createRouter, createWebHistory } from 'vue-router';
 
 import login from '../componets/login.vue';
@@ -8,18 +6,22 @@ import page404 from '../componets/page404.vue';
 import mainlayout from '../componets/layouts/main.vue';
 import statdasboard from '../componets/pages/dashboard.vue';
 import members_list from '../componets/pages/members_list.vue';
-import add_member from '../componets/pages/add_member.vue';
-import dues_list from '../componets/pages/dues_list.vue';
+import paticipantdetails from '../componets/pages/particiapant_details.vue';
 import group_list from '../componets/pages/group_list.vue';
 import paddues from '../componets/pages/paydues.vue';
 import add_group from '../componets/pages/add_group.vue';
-import editmember from '../componets/pages/editmember.vue';
-import editdues from '../componets/pages/editdues.vue';
+import editEventbtn from '../componets/pages/edit_events.vue';
+import eventform from '../componets/pages/event_form.vue';
 import editgroup from '../componets/pages/editgroup.vue';
 import users from '../componets/pages/users_list.vue';
 import permission from '../componets/pages/permission.vue';
 import menus from '../componets/pages/menu_list.vue';
 import addmenu from '../componets/pages/add_menu.vue'
+import evaddevents from '../componets/pages/event_list.vue';
+import addeventbtn from '../componets/pages/add_events.vue';
+import publicform from '../componets/pages/event_registration.vue';
+import participants from '../componets/pages/paticipant_list.vue';
+
 
 
 
@@ -35,27 +37,28 @@ import addmenu from '../componets/pages/add_menu.vue'
 const routes=[
 
     {path:'/',name:'login',component:login},
-    {path:'/login',name:'mainlogin',component:login},
+    { path: '/login', name: 'mainlogin', component: login },
+    { path: '/publicform/:id', name: 'publicform', component: publicform },
 
 
 
     {path:'/dashboard',name:'mainlayout',component:mainlayout,meta: { requiresAuth: true},
     children:[
          {path:'',name:'statdasboard',component:statdasboard},
-        {path:'/members',name:'members',component:members_list,meta: { requiresAuth: true}},
-        {path:'/addmember',name:'addmember',component:add_member,meta: { requiresAuth: true}},
-        {path:'/dues',name:'dues',component:dues_list,meta: { requiresAuth: true}},
-        {path:'/groups',name:'groups',component:group_list,meta: { requiresAuth: true}},
+        {path:'/addeventbtn',name:'addeventbtn',component:addeventbtn,meta: { requiresAuth: true}},
+        {path:'/evaddevents',name:'evaddevents',component:evaddevents,meta: { requiresAuth: true}},
+        {path:'/paticipantdetails/:id',name:'paticipantdetails',component:paticipantdetails,meta: { requiresAuth: true}},
         {path:'/paddues/:id',name:'paddues',component:paddues,props:true,meta: { requiresAuth: true}},
         {path:'/adddues',name:'adddues',component:members_list,meta: { requiresAuth: true}},
         {path:'/addgroup',name:'addgroup',component:add_group,meta: { requiresAuth: true}},
-        {path:'/editmember/:id',name:'editmember',component:editmember,meta: { requiresAuth: true},props:true},
-        {path:'/editdues/:id',name:'editdues',component:editdues,props:true,meta: { requiresAuth: true}},
+        {path:'/editEventbtn/:id',name:'editEventbtn',component:editEventbtn,meta: { requiresAuth: true},props:true},
+        {path:'/eventform/:id',name:'eventform',component:eventform,props:true,meta: { requiresAuth: true}},
         {path:'/editgroup/:id',name:'editgroup',component:editgroup,props:true,meta: { requiresAuth: true}},
         {path:'/users',name:'users',component:users,meta: { requiresAuth: true}},
         {path:'/permission/:user_id',name:'permission',component:permission,props:true,meta: { requiresAuth: true}},
         {path:'/menus',name:'menus',component:menus,meta: { requiresAuth: true}},
-        {path:'/addmenu',name:'addmenu',component:addmenu,meta: { requiresAuth: true}},
+        { path: '/addmenu', name: 'addmenu', component: addmenu, meta: { requiresAuth: true } },
+        {path:'/participants',name:'participants',component:participants,meta: { requiresAuth: true}},
 
 
 
