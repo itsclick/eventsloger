@@ -142,6 +142,54 @@ class EventFormController extends Controller
     }
 
 
+
+    //get event by eid
+    // public function eventbyeid($event_id)
+    // {
+    //     $event = EventForm::where('event_id', $event_id)->first();
+
+    //     if (!$event) {
+    //         return response()->json([
+    //             "okay" => false,
+    //             "msg" => "No Event ID found",
+    //             "data" => null
+    //         ], 404);
+    //     }
+
+    //     return response()->json([
+    //         "okay" => true,
+    //         "msg" => "success",
+    //         "data" => $event
+    //     ]);
+    // }
+
+
+    public function eventbyeid($event_id)
+    {
+        $event = EventForm::with('registrations')
+            ->where('event_id', $event_id)
+            ->first();
+
+        if (!$event) {
+            return response()->json([
+                "okay" => false,
+                "msg" => "No Event ID found",
+                "data" => null
+            ], 404);
+        }
+
+        return response()->json([
+            "okay" => true,
+            "msg" => "success",
+            "data" => $event
+        ]);
+    }
+
+
+
+
+
+
     //verifiy paticipants
     public function verify(Request $request, $eventCode)
     {

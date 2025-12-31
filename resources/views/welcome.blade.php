@@ -14,7 +14,11 @@
             
             <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
             <link rel="stylesheet" href="{{ asset('assets/css/vendors.min.css') }}">
-            <link href="{{asset ('assets/plugins/jsvectormap/jsvectormap.min.css') }}"  />
+            <link rel="stylesheet" href="{{asset ('assets/plugins/jsvectormap/jsvectormap.min.css') }}"  />
+            <link rel="stylesheet" href="{{asset ('assets/plugins/spinkit/spinkit.min.css') }}"  />
+
+
+           
 
             
             

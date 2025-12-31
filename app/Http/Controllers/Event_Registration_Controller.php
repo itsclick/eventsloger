@@ -53,4 +53,16 @@ class EventRegistrationController extends Controller
 
         return response()->json(['msg' => 'Form submitted successfully']);
     }
+
+
+    //Get all participants for a specific event
+    public function participantsByEvent($eventId)
+    {
+        $participants = EventForm::where('event_id', $eventId)->get();
+
+        return response()->json([
+            "okay" => true,
+            "data" => $participants
+        ]);
+    }
 }

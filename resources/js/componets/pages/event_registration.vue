@@ -1,178 +1,188 @@
 <template>
-  <div class="container mt-5">
-    <div class="row align-items-center">
+  <div class="container-fluid">
+    <div class="row g-0">
 
-      <!-- LEFT IMAGE -->
-      <div class="col-md-6 d-none d-md-block">
+      <!-- LEFT IMAGE AS FULL BACKGROUND -->
+      <div
+        class="col-md-6 d-none d-md-block left-image"
+      >
         <img
+          v-if="formvalue?.image"
+          :src="`/storage/${formvalue.image}`"
+          class="img-fluid h-100 w-100"
+          alt="Event"
+        />
+        <img
+          v-else
           src="@/assets/images/user-bg-pattern.png"
-          class="img-fluid rounded object-fit-cover"
+          class="img-fluid h-100 w-100"
           alt="Event"
         />
       </div>
 
-      <!-- RIGHT CONTENT -->
-      <div class="col-md-6 d-none d-md-block">
+      <!-- RIGHT COLUMN WITH CENTERED CARD -->
+      <div class="col-md-6 d-flex justify-content-center align-items-center p-4">
 
-        <!-- 🔍 VERIFICATION FORM -->
-        <div v-if="step === 'verify'" class="card p-4 mb-4">
-          <h4 class="mb-3">Verify Registration</h4>
+        <div class="w-100" style="">
 
-        <input type="tel" v-model="identifier" class="form-control mb-3" placeholder="Phone number"
-      maxlength="10" inputmode="numeric"  @input="identifier = identifier.replace(/[^0-9]/g, '').slice(0, 10)"/>
+          <!-- 🔍 VERIFY -->
+          <div v-if="step === 'verify'" class="card p-4 shadow">
+            <h4 class="mb-3 text-center">Verify Registration</h4>
 
-
-          <button
-            class="btn btn-primary w-100"
-            :disabled="loading"
-            @click="verifyParticipant"
-          >
-            {{ loading ? "Verifying..." : "Verify" }}
-          </button>
-        </div>
-
-        <!-- ✅ VERIFIED -->
-        <div v-if="step === 'verified'" class="card p-4 text-center">
-        <h3 class="text-success mb-3">Participant Verified</h3>
-
-  <div class="mb-3">
-    <p><strong>Full Name:</strong> {{ verifiedData.full_name }}<br>
-    <strong>Phone:</strong> {{ verifiedData.phone_number }}<br>
-   <strong>Gender:</strong> {{ verifiedData.gender }}<br>
-   <strong>Verified?</strong> {{ verifiedData.attended===1?'Yes':'No' }}
-   </p>
-  </div>
-
-  <div class="d-flex justify-content-center">
-  <button
-    v-if="Number(verifiedData.attended) === 1"
-    class="btn btn-success"  @click="refreshPage"> Yeah!, you have been here
-    </button>
-
-  <button
-    v-else
-    class="btn btn-primary w-50"
-    :disabled="loading"
-    @click="confirmParticipant"
-  >
-    {{ loading ? "Confirming..." : "Yes, it's me" }}
-  </button>
-</div>
-
-</div>
-
-        <!-- 📝 REGISTRATION FORM -->
-        <div v-if="step === 'register'" class="card p-4">
-          <h4 class="mb-3">Register Participant</h4>
-
-          <form @submit.prevent="submitForm">
-            <div
-              v-for="(field, index) in form.fields"
-              :key="index"
-              class="mb-3"
-            >
-              <label class="form-label">
-                {{ field.label }}
-                <span v-if="field.is_required">*</span>
-              </label>
-
-              <input
-                v-if="field.type !== 'select'"
-                :type="field.type === 'phone' ? 'text' : field.type"
-                class="form-control"
-                v-model="formData[field.name]"
-                :required="field.is_required"
-              />
-
-              <select
-                v-if="field.type === 'select'"
-                class="form-select"
-                v-model="formData[field.name]"
-                :required="field.is_required"
-              >
-                <option value="">Select</option>
-                <option
-                  v-for="opt in field.options"
-                  :key="opt"
-                  :value="opt"
-                >
-                  {{ opt }}
-                </option>
-              </select>
-            </div>
+            <input
+              type="tel"
+              v-model="identifier"
+              class="form-control mb-3"
+              placeholder="Phone number"
+              maxlength="10"
+              inputmode="numeric"
+              @input="identifier = identifier.replace(/[^0-9]/g, '').slice(0, 10)"
+            />
 
             <button
-              type="submit"
-              class="btn btn-success w-100"
+              class="btn btn-primary w-100"
               :disabled="loading"
+              @click="verifyParticipant"
             >
-              {{ loading ? "Submitting..." : "Submit Registration" }}
+              {{ loading ? "Verifying..." : "Verify" }}
             </button>
-          </form>
-        </div>
+          </div>
 
+          <!-- ✅ VERIFIED -->
+          <div v-if="step === 'verified' && verifiedData" class="card p-4 text-center shadow">
+            <h3 class="text-success mb-3">Participant Verified</h3>
+
+            <p>
+              <strong>Full Name:</strong> {{ verifiedData.full_name }}<br>
+              <strong>Phone:</strong> {{ verifiedData.phone_number }}<br>
+              <strong>Gender:</strong> {{ verifiedData.gender }}<br>
+              <strong>Verified?</strong> {{ verifiedData.attended === 1 ? "Yes" : "No" }}
+            </p>
+
+            <div class="d-flex justify-content-center">
+              <button
+                v-if="Number(verifiedData.attended) === 1"
+                class="btn btn-success"
+                @click="refreshPage"
+              >
+                Yeah! You have been here
+              </button>
+
+              <button
+                v-else
+                class="btn btn-primary w-50"
+                :disabled="loading"
+                @click="confirmParticipant"
+              >
+                {{ loading ? "Confirming..." : "Yes, it's me" }}
+              </button>
+            </div>
+          </div>
+
+          <!-- 📝 REGISTER -->
+          <div v-if="step === 'register'" class="card p-4 shadow">
+            <h4 class="mb-3">Register Participant</h4>
+
+            <form @submit.prevent="submitForm">
+              <div v-for="(field, index) in form.fields" :key="index" class="mb-3">
+                <label class="form-label">
+                  {{ field.label }}
+                  <span v-if="field.is_required">*</span>
+                </label>
+
+                <input
+                  v-if="field.type !== 'select'"
+                  :type="field.type === 'phone' ? 'text' : field.type"
+                  class="form-control"
+                  v-model="formData[field.name]"
+                  :required="field.is_required"
+                />
+
+                <select
+                  v-else
+                  class="form-select"
+                  v-model="formData[field.name]"
+                  :required="field.is_required"
+                >
+                  <option value="">Select</option>
+                  <option v-for="opt in field.options" :key="opt" :value="opt">
+                    {{ opt }}
+                  </option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-success w-100" :disabled="loading">
+                {{ loading ? "Submitting..." : "Submit Registration" }}
+              </button>
+            </form>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-    import { storeToRefs } from "pinia";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
-import { menustore } from "@/store/menus.js";
 import Swal from "sweetalert2";
+import { storeToRefs } from "pinia";
 
+import { menustore } from "@/store/menus.js";
+import { useViewDataStore } from "@/store/ViewDataStore.js";
+
+/* ROUTE */
 const route = useRoute();
 const eventCode = route.params.id;
-// Pinia store
+
+/* STORES */
 const menuStore = menustore();
+const viewDataStore = useViewDataStore();
+const { formvalue } = storeToRefs(viewDataStore);
 const { user_id } = storeToRefs(menuStore);
 
-const step = ref("verify"); // verify | register | verified
+/* STATE */
+const step = ref("verify");
 const identifier = ref("");
 const verifiedData = ref(null);
 const loading = ref(false);
-
-// Registration form data
 const form = ref({ fields: [] });
 const formData = ref({});
 
+/* LOAD EVENT */
+onMounted(() => {
+  viewDataStore.geteventbyid(eventCode);
+});
 
-
-
-//refresh page
+/* REFRESH PAGE */
 function refreshPage() {
   window.location.reload();
 }
 
-
-
-// Load registration form from backend
+/* LOAD FORM */
 async function loadRegistrationForm() {
   try {
     const res = await axios.get(`/api/events/publicform/${eventCode}`);
     form.value.fields = res.data.fields;
 
-    // Prefill identifier if phone/email exists
     formData.value = {};
     res.data.fields.forEach(f => {
-      if (f.name === "phone_number" || f.name === "email_address") {
-        formData.value[f.name] = identifier.value;
-      } else {
-        formData.value[f.name] = "";
-      }
+      formData.value[f.name] =
+        f.name === "phone_number" || f.name === "email_address"
+          ? identifier.value
+          : "";
     });
-  } catch (err) {
-    Swal.fire("Error", "Registration form not found for this event", "error");
+  } catch {
+    Swal.fire("Error", "Registration form not found", "error");
   }
 }
 
-// Verify participant
+/* VERIFY */
 async function verifyParticipant() {
   if (!identifier.value) {
-    Swal.fire("Error", "Enter phone or email", "error");
+    Swal.fire("Error", "Enter phone number", "error");
     return;
   }
 
@@ -183,27 +193,17 @@ async function verifyParticipant() {
       identifier: identifier.value
     });
 
-  if (res.data.found) {
-  verifiedData.value = {
-    attended: res.data.data.attended,
-    event_form_id: res.data.data.event_form_id,
-
-    // 🔑 store the identifier used for verification
-    identifier: identifier.value,
-
-    full_name: res.data.data.full_name,
-    phone_number: res.data.data.phone_number,
-    email_address: res.data.data.email_address,
-    gender: res.data.data.gender
-  };
-
-  step.value = "verified";
-  Swal.fire("VERIFIED", "Hurray, we found you!", "success");
-} else {
+    if (res.data.found) {
+      verifiedData.value = {
+        ...res.data.data,
+        identifier: identifier.value
+      };
+      step.value = "verified";
+      Swal.fire("Verified", "Hurray, we found you!", "success");
+    } else {
       step.value = "register";
-      Swal.fire("Oops!", "Registration not found, register now!", "info");
-
       await loadRegistrationForm();
+      Swal.fire("Info", "Registration not found. Register now!", "info");
     }
   } catch {
     Swal.fire("Error", "Verification failed", "error");
@@ -212,84 +212,58 @@ async function verifyParticipant() {
   }
 }
 
+/* CONFIRM */
 async function confirmParticipant() {
-  if (!verifiedData.value?.event_form_id || !verifiedData.value?.phone_number) {
-    Swal.fire("Error", "Cannot confirm attendance. Missing data.", "error");
-    return;
-  }
-
   loading.value = true;
 
   try {
     const res = await axios.post(
       `/api/events/confirm/${verifiedData.value.event_form_id}`,
-      {
-        phone_number: verifiedData.value.phone_number
-      }
+      { phone_number: verifiedData.value.phone_number }
     );
 
     Swal.fire("Confirmed", res.data.msg, "success");
-
-    // Reset UI
-    step.value = "verify";
-    verifiedData.value = null;
-    identifier.value = "";
-  } catch (err) {
-    Swal.fire("Error", "Failed to confirm attendance", "error");
+    refreshPage();
+  } catch {
+    Swal.fire("Error", "Confirmation failed", "error");
   } finally {
     loading.value = false;
   }
 }
 
-
-
-
-
-// Submit registration
+/* SUBMIT REGISTRATION */
 async function submitForm() {
-  if (!formData.value) return;
-
   loading.value = true;
 
-  // Build the payload
-  const payload = {
-    ...formData.value,
-    user_id: user_id.value // from Pinia store
-  };
-
-  // Log payload to confirm user_id is included
-  console.log("Submitting payload:", payload);
-
   try {
-    const res = await axios.post(
-      `/api/events/saveregistration/${eventCode}`,
-      payload
-    );
+    await axios.post(`/api/events/saveregistration/${eventCode}`, {
+      ...formData.value,
+      user_id: user_id.value
+    });
 
     Swal.fire("Success", "Registration completed", "success");
-
-    // Reset form
-    Object.keys(formData.value).forEach(k => formData.value[k] = "");
-    step.value = "verify";
-    identifier.value = "";
+    refreshPage();
   } catch (err) {
-    console.log("Error details:", err.response?.data || err);
-    Swal.fire("Error", "Failed to submit registration", "error");
+    Swal.fire("Error", "Registration failed", "error");
   } finally {
     loading.value = false;
   }
 }
-
-
-
-
 </script>
 
 <style scoped>
-.card {
-  max-width: 800px;
-  margin: 0 auto;
-  border-radius: 8px;
+.left-image {
+  height: 100vh;
+  overflow: hidden;
 }
 
+.left-image img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.card {
+  border-radius: 10px;
+}
 </style>

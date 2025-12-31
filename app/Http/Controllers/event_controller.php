@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\event_model;
+use App\Models\EventForm;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -88,23 +89,29 @@ class event_controller extends Controller
     }
 
 
-    //get event by id
-    public function eventbyid($id)
+    //get membership by id
+    public function eventbyid($eid)
     {
-        $eventid = event_model::find($id);
-        if (!$eventid) {
+        $eventbyid = event_model::where('eid', $eid)->first();
+        if (!$eventbyid) {
             return response()->json([
                 "okay" => false,
-                "msg" => "No Event ID found",
+                "msg" => "No Member ID found",
                 "data" => null
             ], 404);
         }
         return response()->json([
             "okay" => true,
             "msg" => "sucess",
-            "data" => $eventid
+            "data" => $eventbyid
         ]);
     }
+
+
+
+
+
+
 
 
 

@@ -30,42 +30,72 @@
 
           <div class="col-md-2">
             <div class="form-check mt-4">
-              <input class="form-check-input" type="checkbox" v-model="newField.required" />
+              <input
+                class="form-check-input"
+                type="checkbox"
+                v-model="newField.required"
+              />
               <label class="form-check-label">Required</label>
             </div>
           </div>
 
           <div class="col-md-2 text-end">
-            <button class="btn btn-primary" @click="addField">Add Field </button>
+            <button class="btn btn-primary" @click="addField">
+              Add Field
+            </button>
           </div>
         </div>
 
         <!-- Dropdown options -->
         <div v-if="newField.type === 'select'" class="mt-3">
           <label class="form-label">Dropdown Options (comma separated)</label>
-          <input v-model="newField.options" class="form-control"  placeholder="Male, Female" />
+          <input
+            v-model="newField.options"
+            class="form-control"
+            placeholder="Male, Female"
+          />
         </div>
       </div>
 
       <!-- ================= FORM PREVIEW ================= -->
       <h6 class="mb-3">Form Preview</h6>
 
-      <div v-if="fields.length === 0" class="text-muted">
-        No fields added yet.
-      </div>
-
       <div
-        v-for="(field, index) in fields"  :key="index" class="border rounded p-3 mb-3" >
+        v-for="(field, index) in fields"
+        :key="index"
+        class="border rounded p-3 mb-3"
+      >
         <div class="d-flex justify-content-between align-items-center mb-2">
-          <strong>{{ field.label }}</strong>
-          <button class="btn btn-sm btn-danger" @click="removeField(index)"> Remove </button>
+          <div>
+            <strong>{{ field.label }}</strong>
+            <span v-if="field.isDefault" class="badge bg-secondary ms-2">
+              Default
+            </span>
+          </div>
+
+          <button
+            class="btn btn-sm btn-danger"
+            @click="removeField(index)"
+            :disabled="field.isDefault"
+          >
+            Remove
+          </button>
         </div>
 
+        <!-- INPUT -->
         <input
           v-if="field.type === 'text' || field.type === 'email' || field.type === 'phone'"
-          :type="field.type === 'phone' ? 'text' : field.type" class="form-control" :required="field.required" />
+          :type="field.type === 'phone' ? 'text' : field.type"
+          class="form-control"
+          :required="field.required"
+        />
 
-        <select v-if="field.type === 'select'"  class="form-select"  :required="field.required" >
+        <!-- SELECT -->
+        <select
+          v-if="field.type === 'select'"
+          class="form-select"
+          :required="field.required"
+        >
           <option value="">Select</option>
           <option v-for="opt in field.options" :key="opt">
             {{ opt }}
@@ -80,7 +110,10 @@
       <!-- ================= SAVE BUTTON ================= -->
       <div class="text-end mt-4">
         <button
-          class="btn btn-success" :disabled="saveStore.saveloader || fields.length === 0" @click="saveForm" >
+          class="btn btn-success"
+          :disabled="saveStore.saveloader || fields.length === 0"
+          @click="saveForm"
+        >
           <span v-if="saveStore.saveloader">Saving...</span>
           <span v-else>Save Form</span>
         </button>
@@ -92,7 +125,6 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useSaveDataStore } from "@/store/SaveDataStore.js";
 import { menustore } from "@/store/menus.js";
@@ -105,15 +137,47 @@ const props = defineProps({
   },
 });
 
-const router = useRouter();
 const saveStore = useSaveDataStore();
-
-// Pinia store
 const menuStore = menustore();
 const { user_id } = storeToRefs(menuStore);
 
-const fields = ref([]);
+/* ================= DEFAULT FIELDS ================= */
+const fields = ref([
+  {
+    label: "Full Name",
+    name: "full_name",
+    type: "text",
+    required: true,
+    options: [],
+    isDefault: true,
+  },
+  {
+    label: "Phone Number",
+    name: "phone_number",
+    type: "phone",
+    required: true,
+    options: [],
+    isDefault: true,
+  },
+  {
+    label: "Email Address",
+    name: "email_address",
+    type: "email",
+    required: false,
+    options: [],
+    isDefault: true,
+  },
+  {
+    label: "Gender",
+    name: "gender",
+    type: "select",
+    required: true,
+    options: ["Male", "Female"],
+    isDefault: true,
+  },
+]);
 
+/* ================= NEW FIELD ================= */
 const newField = ref({
   type: "",
   label: "",
@@ -121,21 +185,33 @@ const newField = ref({
   options: "",
 });
 
+/* ================= ADD FIELD ================= */
 function addField() {
   if (!newField.value.type || !newField.value.label) {
     Swal.fire("Missing data", "Field type and label are required", "warning");
     return;
   }
 
+  const fieldName = newField.value.label
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+
+  const exists = fields.value.some(f => f.name === fieldName);
+  if (exists) {
+    Swal.fire("Duplicate field", "This field already exists", "warning");
+    return;
+  }
+
   fields.value.push({
     label: newField.value.label,
-    name: newField.value.label.toLowerCase().replace(/\s+/g, "_"),
+    name: fieldName,
     type: newField.value.type,
     required: newField.value.required,
     options:
       newField.value.type === "select"
         ? newField.value.options.split(",").map(o => o.trim())
         : [],
+    isDefault: false,
   });
 
   newField.value = {
@@ -146,15 +222,16 @@ function addField() {
   };
 }
 
+/* ================= REMOVE FIELD ================= */
 function removeField(index) {
   fields.value.splice(index, 1);
 }
 
+/* ================= SAVE FORM ================= */
 function saveForm() {
   saveStore.saveEventForm(props.id, fields.value, user_id.value);
 }
 </script>
-
 
 <style scoped>
 .border {

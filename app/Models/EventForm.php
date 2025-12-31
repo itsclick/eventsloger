@@ -17,4 +17,9 @@ class EventForm extends Model
     {
         return $this->hasMany(EventFormField::class);
     }
+
+    public function registrations()
+    {
+        return $this->hasMany(EventFormSubmission::class, 'event_form_id');
+    }
 }

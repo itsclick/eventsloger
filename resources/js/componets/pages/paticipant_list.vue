@@ -61,7 +61,7 @@
                         class="ri ri-eye-line me-1"
                         :class="{ 'text-muted': getAccess.menu_details !== 1 }"
                         :style="{ cursor: getAccess.menu_details === 1 ? 'pointer' : 'not-allowed' }"
-                        @click="getAccess.menu_details === 1 && viewparticipantbtn(data.id)"
+                        @click="getAccess.menu_details === 1 && viewparticipantbtn(data.eid)"
                         title="View Paticipants"
                       >View Paticipants</i>
                     </span>
@@ -100,8 +100,8 @@ const { getAccess } = storeToRefs(menustore());
 
 // Access events from Pinia store
 const { eventlist } = storeToRefs(useViewDataStore());
-const { fetchallevents, viewparticipantbtn,editEventbtn,eventformbtn } = useViewDataStore();
-const { deleteEvent } = useDeleteDataStore();
+const { fetchallevents, viewparticipantbtn } = useViewDataStore();
+const {  } = useDeleteDataStore();
 
 // Load events on mount
 onMounted(() => {

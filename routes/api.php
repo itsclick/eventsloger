@@ -6,7 +6,7 @@ use App\Http\Controllers\event_controller;
 use App\Http\Controllers\EventFormController;
 use App\Http\Controllers\group_controller;
 use App\Http\Controllers\login_controller;
-use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\menusController;
 use App\Models\Membership_model;
 use Illuminate\Http\Request;
@@ -42,6 +42,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::post('/saveregistration/{eventCode}', [EventFormController::class, 'saveregistration']);
         Route::post('/verify/{eventCode}', [EventFormController::class, 'verify']);
         Route::post('/confirm/{event_form_id}', [EventFormController::class, 'confirmAttendance']);
+        Route::get('/events/eventbyeid/{event_id}', [EventFormController::class, 'eventbyeid']);
+        Route::get('/eventbyid/{eid}', [event_controller::class, 'eventbyid']);
     });
 
 

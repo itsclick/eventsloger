@@ -83,7 +83,7 @@
                         class="ri ri-edit-box-line me-1"
                         :class="{ 'text-muted': getAccess.menu_edit !== 1 }"
                         :style="{ cursor: getAccess.menu_edit === 1 ? 'pointer' : 'not-allowed' }"
-                        @click="getAccess.menu_edit === 1 && editEventbtn(data.id)"
+                        @click="getAccess.menu_edit === 1 && editEventbtn(data.eid)"
                         title="Edit"
                       >Edit Records</i>
                     </span>

@@ -7,7 +7,7 @@
           <div class="col-xl-8">
             <div class="card">
                                     <div class="card-header">
-                                        <h4 class="card-title">Editing Event </h4>
+                                        <h4 class="card-title">Editing Event {{ eid }}</h4>
                                     </div>
 
                                     <div class="card-body">
@@ -95,19 +95,19 @@ const { user_id} = storeToRefs(menustore());
 const { formvalue } = storeToRefs(useViewDataStore());
 
 const { geteventbyid} = useViewDataStore();
-const { updateevent,} = useSaveDataStore();
+const { updateevent} = useSaveDataStore();
 
 
 
 const props = defineProps({
-    id: {
+    eid: {
         type: String,
         default: ''
     }
 });
 
 onMounted(() => {
-    geteventbyid(props.id);
+    geteventbyid(props.eid);
 });
 
 

@@ -13,7 +13,10 @@ export const useViewDataStore = defineStore("useViewDataStore", {
         sysmenuspaginate: [],
         eventlist: [],
         eventpaginate: [],
-       formvalue:'',
+        formvalue: '',
+        eventguest: {},       // object instead of string
+    participants: [],     // added participants
+       
         
 
 
@@ -38,20 +41,20 @@ export const useViewDataStore = defineStore("useViewDataStore", {
         },
 
         //route to call event edit form
-                async editEventbtn(id){
-                    router.push(`/editEventbtn/${id}`);
+                async editEventbtn(eid){
+                    router.push(`/editEventbtn/${eid}`);
         },
         
                 //route to call participant list details
-                async viewparticipantbtn(id){
-                    router.push(`/paticipantdetails/${id}`);
+                async viewparticipantbtn(eid){
+                    router.push(`/paticipantdetails/${eid}`);
         },
                 
                 
-
-         async geteventbyid(id) {
+        // get event by ID
+         async geteventbyid(eid) {
             try {
-                const res = await axios.get(`/api/events/eventbyid/${id}`);
+                const res = await axios.get(`/api/events/eventbyid/${eid}`);
                 this.formvalue = res.data.data || {}; 
                 console.log("event ID:", this.formvalue);
             } catch (error) {
@@ -59,6 +62,48 @@ export const useViewDataStore = defineStore("useViewDataStore", {
                 this.formvalue = null;
             }
         },
+         
+         //GET EVENT ID AND PARTICIPANTS
+async geteventguests(eid) {
+  try {
+    // Use the correct route
+    const res = await axios.get(`/api/events/events/eventbyeid/${eid}`);
+
+    // Assign event object
+    this.eventguest = res.data.data || {};
+
+    // Parse participant data safely
+    this.participants = (res.data.data?.registrations || []).map(p => {
+      let parsed = {};
+      try {
+        parsed = JSON.parse(p.data || "{}");
+      } catch (e) {
+        console.error("Error parsing participant data:", e);
+      }
+      return { ...p, ...parsed };
+    });
+
+    console.log("Event guest:", this.eventguest);
+    console.log("Participants:", this.participants);
+
+  } catch (error) {
+    console.error("Error loading event id:", error);
+    this.eventguest = {};
+    this.participants = [];
+  }
+},
+
+
+    
+
+
+
+          
+     
+  
+         
+         
+         
          
          
         

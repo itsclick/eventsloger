@@ -381,28 +381,9 @@
                             </router-link>
                             </li>
                 
-                <li class="side-nav-item">
-                    
-
-                    <span class="side-nav-link">
-                        <span class="menu-icon"><i class="ri ri-group-2-line"></i></span>
-                        <span class="menu-text" data-lang="apps-team-board">Team Board</span>
-                    </span>
-
-
-                </li>
-                <li class="side-nav-item">
-                    <a href="apps-chat.html" class="side-nav-link">
-                        <span class="menu-icon"><i class="ri ri-message-2-line"></i></span>
-                        <span class="menu-text" data-lang="apps-chat">Chat</span>
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="apps-calendar.html" class="side-nav-link">
-                        <span class="menu-icon"><i class="ri ri-calendar-line"></i></span>
-                        <span class="menu-text" data-lang="apps-calendar">Calendar</span>
-                    </a>
-                </li>
+               
+               
+              
                 
                
               
