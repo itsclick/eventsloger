@@ -21,6 +21,7 @@
                 <tr>
                   <th>#ID</th>
                   <th>Account Name</th>
+                  <th>Account Type</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -28,11 +29,10 @@
                 <tr v-for="m in getallusersmodel" :key="m.id">
                   <td>{{ m.user_id }}</td>
                   <td>{{ m.username }}</td>
+                   <td>{{ m.utype === 1 ? 'Super Admin' : m.utype === 2 ? 'Admin' : m.utype === 3 ? 'User' : 'Unknown' }}</td>
                   <td>
                     
-                    <i class="ri-shield-fill"
-                       @click="permitionbnt(m.user_id)"
-                       title="Add permission"></i>
+                    <i class="ri-shield-fill"@click="permitionbnt(m.user_id)" title="Add permission"></i>
                   </td>
                 </tr>
               </tbody>

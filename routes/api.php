@@ -8,6 +8,7 @@ use App\Http\Controllers\group_controller;
 use App\Http\Controllers\login_controller;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\menusController;
+use App\Http\Controllers\user_controller;
 use App\Models\Membership_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -82,5 +83,6 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::post('/savemenus', [menusController::class, 'savemenus']);
         Route::delete('/deletemenu/{id}', [menusController::class, 'deletemenu']);
         Route::get('/allpermision/{user_id}', [accountManager::class, 'allpermision']);
+        Route::post('/savesystemysers', [user_controller::class, 'savesystemysers']);
     });
 });

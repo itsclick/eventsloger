@@ -1,43 +1,21 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" :style="bgStyle">
     <div class="row g-0">
 
-      <!-- LEFT IMAGE AS FULL BACKGROUND -->
-      <div
-        class="col-md-6 d-none d-md-block left-image"
-      >
-        <img
-          v-if="formvalue?.image"
-          :src="`/storage/${formvalue.image}`"
-          class="img-fluid h-100 w-100"
-          alt="Event"
-        />
-        <img
-          v-else
-          src="@/assets/images/user-bg-pattern.png"
-          class="img-fluid h-100 w-100"
-          alt="Event"
-        />
-      </div>
+      <!-- LEFT BACKGROUND -->
+      <div class="col-md-6 d-none d-md-block left-image"></div>
 
-      <!-- RIGHT COLUMN WITH CENTERED CARD -->
-      <div class="col-md-6 d-flex justify-content-center align-items-center p-4">
+      <!-- RIGHT COLUMN -->
+      <div class="col-md-4 d-flex justify-content-center align-items-center p-4">
+        <div class="w-100">
 
-        <div class="w-100" style="">
-
-          <!-- 🔍 VERIFY -->
+          <!-- VERIFY -->
           <div v-if="step === 'verify'" class="card p-4 shadow">
-            <h4 class="mb-3 text-center">Verify Registration</h4>
+            <h4 class="card-title">Participant Verification</h4>
+            <hr />
 
-            <input
-              type="tel"
-              v-model="identifier"
-              class="form-control mb-3"
-              placeholder="Phone number"
-              maxlength="10"
-              inputmode="numeric"
-              @input="identifier = identifier.replace(/[^0-9]/g, '').slice(0, 10)"
-            />
+            <input type="tel"  v-model="identifier" class="form-control mb-3" placeholder="Phone number"
+              maxlength="10" inputmode="numeric"  @input="identifier = identifier.replace(/[^0-9]/g, '').slice(0, 10)"  />
 
             <button
               class="btn btn-primary w-100"
@@ -48,38 +26,89 @@
             </button>
           </div>
 
-          <!-- ✅ VERIFIED -->
-          <div v-if="step === 'verified' && verifiedData" class="card p-4 text-center shadow">
-            <h3 class="text-success mb-3">Participant Verified</h3>
+          <!-- VERIFIED -->
+                <div v-if="step === 'verified' && verifiedData" class="card shadow border-0">
 
-            <p>
-              <strong>Full Name:</strong> {{ verifiedData.full_name }}<br>
-              <strong>Phone:</strong> {{ verifiedData.phone_number }}<br>
-              <strong>Gender:</strong> {{ verifiedData.gender }}<br>
-              <strong>Verified?</strong> {{ verifiedData.attended === 1 ? "Yes" : "No" }}
-            </p>
+                <!-- Header -->
+                <div class="card-header bg-success text-white text-center">
+                <h5 class="mb-0">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Participant Verified
+                </h5>
+                </div>
 
-            <div class="d-flex justify-content-center">
-              <button
+                <!-- Body -->
+                <div class="card-body">
+
+                <!-- Info Tiles -->
+                <div class="row g-3 mb-3">
+
+                <div class="col-12">
+                <div class="border rounded p-3 bg-light">
+                <small class="text-muted">Full Name</small>
+                <div class="fw-bold fs-5">
+                {{ verifiedData.full_name || '—' }}
+                </div>
+                </div>
+                </div>
+
+                <div class="col-md-6">
+                <div class="border rounded p-3 bg-light">
+                <small class="text-muted">Phone Number</small>
+                <div class="fw-semibold">
+                {{ verifiedData.phone_number }}
+                </div>
+                </div>
+                </div>
+
+                <div class="col-md-6">
+                <div class="border rounded p-3 bg-light">
+                <small class="text-muted">Gender</small>
+                <div class="fw-semibold">
+                {{ verifiedData.gender || '—' }}
+                </div>
+                </div>
+                </div>
+
+                <div class="col-12">
+                <div
+                class="border rounded p-3 text-center"
+                :class="verifiedData.attended === 1 ? 'bg-success text-white' : 'bg-warning-subtle'"
+                >
+                <strong>Status:</strong>
+                {{ verifiedData.attended === 1 ? 'Attendance Confirmed' : 'Not Yet Confirmed' }}
+                </div>
+                </div>
+
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-center gap-2">
+
+                <button
                 v-if="Number(verifiedData.attended) === 1"
-                class="btn btn-success"
+                class="btn btn-success px-4"
                 @click="refreshPage"
-              >
-                Yeah! You have been here
-              </button>
+                >
+                ✔ Already Confirmed
+                </button>
 
-              <button
+                <button
                 v-else
-                class="btn btn-primary w-50"
+                class="btn btn-primary px-4"
                 :disabled="loading"
                 @click="confirmParticipant"
-              >
-                {{ loading ? "Confirming..." : "Yes, it's me" }}
-              </button>
-            </div>
-          </div>
+                >
+                {{ loading ? "Confirming..." : "Yes, it’s me" }}
+                </button>
 
-          <!-- 📝 REGISTER -->
+                </div>
+
+                </div>
+                </div>
+
+
+          <!-- REGISTER -->
           <div v-if="step === 'register'" class="card p-4 shadow">
             <h4 class="mb-3">Register Participant</h4>
 
@@ -93,17 +122,9 @@
                 <input
                   v-if="field.type !== 'select'"
                   :type="field.type === 'phone' ? 'text' : field.type"
-                  class="form-control"
-                  v-model="formData[field.name]"
-                  :required="field.is_required"
-                />
+                  class="form-control" v-model="formData[field.name]" :required="field.is_required" />
 
-                <select
-                  v-else
-                  class="form-select"
-                  v-model="formData[field.name]"
-                  :required="field.is_required"
-                >
+                <select  v-else class="form-select" v-model="formData[field.name]"  :required="field.is_required">
                   <option value="">Select</option>
                   <option v-for="opt in field.options" :key="opt" :value="opt">
                     {{ opt }}
@@ -119,12 +140,13 @@
 
         </div>
       </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -150,13 +172,33 @@ const verifiedData = ref(null);
 const loading = ref(false);
 const form = ref({ fields: [] });
 const formData = ref({});
+const eventId = ref(null); 
+
+/* BACKGROUND STYLE (VITE SAFE) */
+const bgStyle = computed(() => {
+  const defaultBg = new URL("@/assets/images/user-bg-pattern.png",
+    import.meta.url
+  ).href;
+
+  return {
+    backgroundImage: `url(${
+      formvalue.value?.image
+        ? `/storage/${formvalue.value.image}`
+        : defaultBg
+    })`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    minHeight: "100vh"
+  };
+});
 
 /* LOAD EVENT */
 onMounted(() => {
   viewDataStore.geteventbyid(eventCode);
 });
 
-/* REFRESH PAGE */
+/* REFRESH */
 function refreshPage() {
   window.location.reload();
 }
@@ -165,14 +207,16 @@ function refreshPage() {
 async function loadRegistrationForm() {
   try {
     const res = await axios.get(`/api/events/publicform/${eventCode}`);
+
+    eventId.value = res.data.event_id; // ✅ capture event_id
+    console.log("Loaded event_id:", eventId.value);
+
     form.value.fields = res.data.fields;
 
     formData.value = {};
     res.data.fields.forEach(f => {
       formData.value[f.name] =
-        f.name === "phone_number" || f.name === "email_address"
-          ? identifier.value
-          : "";
+        f.name === "phone_number" ? identifier.value : ""; // Only phone_number prefilled
     });
   } catch {
     Swal.fire("Error", "Registration form not found", "error");
@@ -219,7 +263,10 @@ async function confirmParticipant() {
   try {
     const res = await axios.post(
       `/api/events/confirm/${verifiedData.value.event_form_id}`,
-      { phone_number: verifiedData.value.phone_number }
+      {
+        phone_number: verifiedData.value.phone_number,
+        
+       }
     );
 
     Swal.fire("Confirmed", res.data.msg, "success");
@@ -231,19 +278,30 @@ async function confirmParticipant() {
   }
 }
 
-/* SUBMIT REGISTRATION */
+/* SUBMIT */
 async function submitForm() {
+  if (!eventId.value) {
+    Swal.fire("Error", "Event ID not loaded", "error");
+    return;
+  }
+
   loading.value = true;
 
+  const payload = {
+    event_id: eventId.value,
+    ...formData.value,
+    user_id: user_id.value
+  };
+
+  console.log("Submitting payload:", payload); //  console log
+
   try {
-    await axios.post(`/api/events/saveregistration/${eventCode}`, {
-      ...formData.value,
-      user_id: user_id.value
-    });
+    await axios.post(`/api/events/saveregistration/${eventCode}`, payload);
 
     Swal.fire("Success", "Registration completed", "success");
     refreshPage();
   } catch (err) {
+    console.error(err);
     Swal.fire("Error", "Registration failed", "error");
   } finally {
     loading.value = false;
@@ -254,13 +312,6 @@ async function submitForm() {
 <style scoped>
 .left-image {
   height: 100vh;
-  overflow: hidden;
-}
-
-.left-image img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
 }
 
 .card {

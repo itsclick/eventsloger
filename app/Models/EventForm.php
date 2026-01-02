@@ -11,6 +11,7 @@ class EventForm extends Model
         'event_id',
         'status',
         'user_id',
+
     ];
 
     public function fields()

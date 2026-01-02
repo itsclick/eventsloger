@@ -7,7 +7,7 @@ import mainlayout from '../componets/layouts/main.vue';
 import statdasboard from '../componets/pages/dashboard.vue';
 import members_list from '../componets/pages/members_list.vue';
 import paticipantdetails from '../componets/pages/particiapant_details.vue';
-import group_list from '../componets/pages/group_list.vue';
+import adduser from '../componets/pages/add_user.vue';
 import paddues from '../componets/pages/paydues.vue';
 import add_group from '../componets/pages/add_group.vue';
 import editEventbtn from '../componets/pages/edit_events.vue';
@@ -58,7 +58,8 @@ const routes=[
         {path:'/permission/:user_id',name:'permission',component:permission,props:true,meta: { requiresAuth: true}},
         {path:'/menus',name:'menus',component:menus,meta: { requiresAuth: true}},
         { path: '/addmenu', name: 'addmenu', component: addmenu, meta: { requiresAuth: true } },
-        {path:'/participants',name:'participants',component:participants,meta: { requiresAuth: true}},
+        { path: '/participants', name: 'participants', component: participants, meta: { requiresAuth: true } },
+         {path:'/adduser',name:'adduser',component:adduser,meta: { requiresAuth: true}},
 
 
 

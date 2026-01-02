@@ -15,6 +15,11 @@ class EventFormSubmission extends Model
         'data',
         'user_id',
         'attended',
+        'event_id',
+        'full_name',       // new
+        'phone_number',    // new
+        'email_address',   // new
+        'gender',
 
     ];
 
