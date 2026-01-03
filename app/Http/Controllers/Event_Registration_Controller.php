@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventForm;
 use App\Models\EventFormSubmission;
 
+
 class EventRegistrationController extends Controller
 {
     // Handle public form submission

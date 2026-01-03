@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\EventForm;
 use App\Models\EventFormField;
 use App\Models\EventFormSubmission;
-
+use App\Mail\EventRegistrationOtpMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Carbon;
 
 class EventFormController extends Controller
 {
@@ -106,52 +108,43 @@ class EventFormController extends Controller
     //save public regisration from form 
     public function saveregistration(Request $request, $eventCode)
     {
-        // 1️Validate event_id
+        // 1️⃣ Validate event_id
         $request->validate([
             'event_id' => 'required'
         ]);
 
-        // 2️ Ensure route param matches payload
+        // 2️⃣ Ensure route param matches payload
         if ($eventCode !== $request->event_id) {
-            return response()->json([
-                'msg' => 'Event mismatch'
-            ], 422);
+            return response()->json(['msg' => 'Event mismatch'], 422);
         }
 
-        // 3️ Find the event form
+        // 3️⃣ Find the event form
         $form = EventForm::where('event_id', $request->event_id)->first();
 
         if (!$form) {
             return response()->json(['msg' => 'Form not found'], 404);
         }
 
-        // 4️Get form fields
+        // 4️⃣ Get fields
         $fields = $form->fields;
-
-        // 5️Build dynamic validation rules
         $rules = [];
 
         foreach ($fields as $f) {
             $fieldRules = [];
 
-            if ($f->is_required) {
-                $fieldRules[] = 'required';
-            }
+            if ($f->is_required) $fieldRules[] = 'required';
+            if ($f->type === 'email') $fieldRules[] = 'email';
 
-            if ($f->type === 'email') {
-                $fieldRules[] = 'email';
-            }
-
-            if (!empty($fieldRules)) {
+            if ($fieldRules) {
                 $rules[$f->name] = $fieldRules;
             }
         }
 
-        // 6️Validate input
+        // 5️⃣ Validate input
         $validated = $request->validate($rules);
 
-        // 7️Prevent duplicate registration PER EVENT
-        if (isset($validated['phone_number'])) {
+        // 6️⃣ Prevent duplicate PER EVENT
+        if (!empty($validated['phone_number'])) {
             $exists = EventFormSubmission::where('event_id', $request->event_id)
                 ->where('phone_number', $validated['phone_number'])
                 ->exists();
@@ -163,13 +156,13 @@ class EventFormController extends Controller
             }
         }
 
-        // 8️Extract dedicated fields
+        // 7️⃣ Dedicated fields
         $fullName     = $validated['full_name'] ?? null;
         $phoneNumber  = $validated['phone_number'] ?? null;
         $emailAddress = $validated['email_address'] ?? null;
         $gender       = $validated['gender'] ?? null;
 
-        // 9️ Remove dedicated fields from JSON payload
+        // 8️⃣ Other fields → JSON
         $otherData = $validated;
         unset(
             $otherData['full_name'],
@@ -178,8 +171,11 @@ class EventFormController extends Controller
             $otherData['gender']
         );
 
-        // 10️ Save registration
-        EventFormSubmission::create([
+        // 9️⃣ Generate OTP
+        $otp = random_int(100000, 999999);
+
+        // 🔟 Save registration
+        $submission = EventFormSubmission::create([
             'event_form_id' => $form->id,
             'event_id'      => $request->event_id,
             'user_id'       => $request->user_id,
@@ -187,12 +183,22 @@ class EventFormController extends Controller
             'phone_number'  => $phoneNumber,
             'email_address' => $emailAddress,
             'gender'        => $gender,
+            'otp_code'      => $otp,
+            'otp_expires_at' => Carbon::now()->addMinutes(10),
             'data'          => json_encode($otherData),
         ]);
 
-        // 11 Success response
+        // 1️⃣1️⃣ Send email (only if email exists)
+        if ($emailAddress) {
+            Mail::to($emailAddress)->send(
+                new EventRegistrationOtpMail($otp, $fullName, $request->event_id)
+            );
+        }
+
+        // 1️⃣2️⃣ Success response
         return response()->json([
-            'msg' => 'Registration successful'
+            'msg' => 'Registration successful. OTP sent to email.',
+            'submission_id' => $submission->id
         ]);
     }
 
