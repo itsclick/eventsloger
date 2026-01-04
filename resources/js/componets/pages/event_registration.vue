@@ -415,7 +415,7 @@ async function resendOtp() {
   resendingOtp.value = true;
 
   try {
-    const res = await axios.post(`/api/events/${eventCode}/resend-otp`, {
+    const res = await axios.post(`/api/events/events/${eventCode}/resend-otp`, {
       phone_number: identifier.value,
     });
 
