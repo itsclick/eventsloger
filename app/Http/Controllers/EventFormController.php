@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use App\Models\EventForm;
+use Illuminate\Http\Request;
 use App\Models\EventFormField;
-use App\Models\EventFormSubmission;
-use App\Mail\EventRegistrationOtpMail;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Models\EventFormSubmission;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EventRegistrationOtpMail;
 
 class EventFormController extends Controller
 {
@@ -120,61 +121,47 @@ class EventFormController extends Controller
 
         // 3️⃣ Find the event form
         $form = EventForm::where('event_id', $request->event_id)->first();
-
         if (!$form) {
             return response()->json(['msg' => 'Form not found'], 404);
         }
 
-        // 4️⃣ Get fields
+        // 4️⃣ Build dynamic validation rules from form fields
         $fields = $form->fields;
         $rules = [];
-
         foreach ($fields as $f) {
             $fieldRules = [];
-
             if ($f->is_required) $fieldRules[] = 'required';
             if ($f->type === 'email') $fieldRules[] = 'email';
-
-            if ($fieldRules) {
-                $rules[$f->name] = $fieldRules;
-            }
+            if ($fieldRules) $rules[$f->name] = $fieldRules;
         }
 
-        // 5️⃣ Validate input
         $validated = $request->validate($rules);
 
-        // 6️⃣ Prevent duplicate PER EVENT
+        // 5️⃣ Prevent duplicate registration by phone number
         if (!empty($validated['phone_number'])) {
             $exists = EventFormSubmission::where('event_id', $request->event_id)
                 ->where('phone_number', $validated['phone_number'])
                 ->exists();
 
             if ($exists) {
-                return response()->json([
-                    'msg' => 'You have already registered for this event'
-                ], 409);
+                return response()->json(['msg' => 'You have already registered for this event'], 409);
             }
         }
 
-        // 7️⃣ Dedicated fields
+        // 6️⃣ Extract dedicated fields
         $fullName     = $validated['full_name'] ?? null;
         $phoneNumber  = $validated['phone_number'] ?? null;
         $emailAddress = $validated['email_address'] ?? null;
         $gender       = $validated['gender'] ?? null;
 
-        // 8️⃣ Other fields → JSON
+        // 7️⃣ Other fields → JSON
         $otherData = $validated;
-        unset(
-            $otherData['full_name'],
-            $otherData['phone_number'],
-            $otherData['email_address'],
-            $otherData['gender']
-        );
+        unset($otherData['full_name'], $otherData['phone_number'], $otherData['email_address'], $otherData['gender']);
 
-        // 9️⃣ Generate OTP
-        $otp = random_int(100000, 999999);
+        // 8️⃣ Generate 6-digit OTP
+        $otp_plain = random_int(100000, 999999);
 
-        // 🔟 Save registration
+        // 9️⃣ Save registration with hashed OTP and expiry
         $submission = EventFormSubmission::create([
             'event_form_id' => $form->id,
             'event_id'      => $request->event_id,
@@ -183,23 +170,136 @@ class EventFormController extends Controller
             'phone_number'  => $phoneNumber,
             'email_address' => $emailAddress,
             'gender'        => $gender,
-            'otp_code'      => $otp,
-            'otp_expires_at' => Carbon::now()->addMinutes(10),
+            'otp_code'      => Hash::make($otp_plain),            // hashed OTP
+            'otp_expires_at' => Carbon::now()->addMinutes(10),     // OTP expires in 10 min
             'data'          => json_encode($otherData),
         ]);
 
-        // 1️⃣1️⃣ Send email (only if email exists)
+        // 1️⃣0️⃣ Send email if participant has email
         if ($emailAddress) {
             Mail::to($emailAddress)->send(
-                new EventRegistrationOtpMail($otp, $fullName, $request->event_id)
+                new EventRegistrationOtpMail($otp_plain, $fullName, $request->event_id)
             );
         }
 
-        // 1️⃣2️⃣ Success response
+        // 1️⃣1️⃣ Success response
         return response()->json([
             'msg' => 'Registration successful. OTP sent to email.',
             'submission_id' => $submission->id
         ]);
+    }
+
+
+
+
+
+    public function verifyOtp(Request $request, $eventCode)
+    {
+        // 1️⃣ Validate query parameters
+        $request->validate([
+            'phone_number' => 'required',
+            'otp_code'     => 'required|digits:6',
+        ]);
+
+        $phone = $request->query('phone_number');
+        $otp   = $request->query('otp_code');
+
+        // 2️⃣ Find participant by event and phone number
+        $submission = EventFormSubmission::where('event_id', $eventCode)
+            ->where('phone_number', $phone)
+            ->first();
+
+        if (!$submission) {
+            return response()->json([
+                'verified' => false,
+                'msg' => 'Participant not found'
+            ], 404);
+        }
+
+        // 3️⃣ Check if already verified
+        if ($submission->verified) {
+            return response()->json([
+                'verified' => false,
+                'msg' => 'Already verified'
+            ], 409);
+        }
+
+        // 4️⃣ Check if OTP expired
+        if (!$submission->otp_expires_at || now()->gt($submission->otp_expires_at)) {
+            return response()->json([
+                'verified' => false,
+                'msg' => 'OTP expired'
+            ], 410);
+        }
+
+        // 5️⃣ Compare hashed OTP
+        if (!Hash::check($otp, $submission->otp_code)) {
+            return response()->json([
+                'verified' => false,
+                'msg' => 'Invalid OTP'
+            ], 422);
+        }
+
+        // 6️⃣ Mark verified
+        $submission->update([
+            'verified' => 1,
+            'otp_code' => null,
+            'otp_expires_at' => null,
+        ]);
+
+        return response()->json([
+            'verified' => true,
+            'submission_id' => $submission->id,
+            'full_name'       => $submission->full_name,
+            'phone_number'    => $submission->phone_number,
+            'gender'          => $submission->gender,
+            'msg' => 'Verification successful'
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function resendOtp(Request $request, $eventCode)
+    {
+        $request->validate([
+            'phone_number' => 'required',
+        ]);
+
+        $submission = EventFormSubmission::where('event_id', $eventCode)
+            ->where('phone_number', $request->phone_number)
+            ->first();
+
+        if (!$submission) {
+            return response()->json(['msg' => 'Participant not found'], 404);
+        }
+
+        // Generate new OTP
+        $otp = random_int(100000, 999999);
+        $submission->otp_code = Hash::make($otp);
+        $submission->otp_expires_at = now()->addMinutes(10);
+        $submission->save();
+
+        // Send via email or SMS
+        if ($submission->email_address) {
+            Mail::to($submission->email_address)->send(new EventRegistrationOtpMail($otp, $submission->full_name, $eventCode));
+        }
+
+        return response()->json(['msg' => 'OTP resent successfully']);
     }
 
 
@@ -259,14 +359,14 @@ class EventFormController extends Controller
     {
         // 1️⃣ Validate input
         $request->validate([
-            'identifier' => 'required'
+            'phone_number' => 'required'
         ]);
 
-        $identifier = $request->identifier;
+        $phoneNumber = $request->phone_number;
 
         // 2️⃣ Search in the dedicated phone_number column for this event
         $submission = EventFormSubmission::where('event_id', $eventCode)
-            ->where('phone_number', $identifier)
+            ->where('phone_number', $phoneNumber)
             ->first();
 
         // 3️⃣ If not found, return false
@@ -297,27 +397,27 @@ class EventFormController extends Controller
 
 
 
+
     //comfirm attendance
-    public function confirmAttendance(Request $request, $eventFormId)
+    public function confirmAttendance(Request $request, $eventCode)
     {
         // 1️⃣ Validate input
         $request->validate([
             'phone_number' => 'required',
         ]);
 
-        // 2️⃣ Find participant by event_form_id and phone_number
-        $submission = EventFormSubmission::where('event_form_id', $eventFormId)
+        // 2️⃣ Find participant by event_id and phone_number
+        $submission = EventFormSubmission::where('event_id', $eventCode)
             ->where('phone_number', $request->phone_number)
             ->first();
 
-        // 3️⃣ If not found
         if (!$submission) {
             return response()->json([
                 'msg' => 'Participant not found'
             ], 404);
         }
 
-        // 4️⃣ If already confirmed
+        // 3️⃣ If already confirmed
         if ($submission->attended == 1) {
             return response()->json([
                 'msg' => 'Attendance already confirmed',
@@ -329,11 +429,11 @@ class EventFormController extends Controller
             ]);
         }
 
-        // 5️⃣ Mark attendance
+        // 4️⃣ Mark attendance
         $submission->attended = 1;
         $submission->save();
 
-        // 6️⃣ Return success + participant data
+        // 5️⃣ Return success
         return response()->json([
             'msg' => 'Thank you for showing up!',
             'participant' => [

@@ -42,9 +42,12 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::get('/publicform/{eventId}', [EventFormController::class, 'publicform']);
         Route::post('/saveregistration/{eventCode}', [EventFormController::class, 'saveregistration']);
         Route::post('/verify/{eventCode}', [EventFormController::class, 'verify']);
-        Route::post('/confirm/{event_form_id}', [EventFormController::class, 'confirmAttendance']);
+        Route::post('/confirm/{eventCode}', [EventFormController::class, 'confirmAttendance']);
         Route::get('/events/eventbyeid/{event_id}', [EventFormController::class, 'eventbyeid']);
         Route::get('/eventbyid/{eid}', [event_controller::class, 'eventbyid']);
+
+        Route::get('/events/{eventCode}/verify-otp', [EventFormController::class, 'verifyOtp']);
+        Route::post('/events/{eventCode}/resend-otp', [EventFormController::class, 'resendOtp']);
     });
 
 

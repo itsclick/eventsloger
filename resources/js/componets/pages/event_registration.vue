@@ -138,6 +138,38 @@
             </form>
           </div>
 
+
+
+          <!-- OTP VERIFICATION -->
+          <div v-if="step === 'otp'" class="card p-4 shadow">
+          <h4 class="card-title">Enter OTP</h4>
+          <hr />
+          <p class="mb-3">Enter the 6-digit code sent to your phone</p>
+
+          <div class="d-flex justify-content-between mb-3 otp-inputs">
+          <input v-for="(digit, index) in otpDigits" :key="index" type="text" maxlength="1"
+          class="form-control otp-box text-center"  v-model="otpDigits[index]" @input="onOtpInput(index, $event)"
+          @keydown.backspace="onOtpBackspace(index, $event)" ref="otpInputs" />
+          </div>
+
+          <button
+          class="btn btn-primary w-100"
+          :disabled="otpDigits.includes('') || loading" @click="submitOtp" >
+          {{ loading ? "Verifying..." : "Verify OTP" }}
+          </button>
+
+          <p v-if="otpMessage" :class="{'text-success': otpVerified, 'text-danger': !otpVerified}" class="mt-2">
+          {{ otpMessage }}
+          </p>
+            <p class="mt-2 text-center">
+          Didn't receive OTP?
+          <button class="btn btn-link p-0" :disabled="resendingOtp" @click="resendOtp">
+          Resend
+          </button>
+          </p>
+          </div>
+
+
         </div>
       </div>
 
@@ -146,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed ,reactive, nextTick} from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -165,8 +197,31 @@ const viewDataStore = useViewDataStore();
 const { formvalue } = storeToRefs(viewDataStore);
 const { user_id } = storeToRefs(menuStore);
 
+/*  OTP */
+
+const otpDigits = reactive(["", "", "", "", "", ""]);
+const otpInputs = ref([]);
+const otpMessage = ref("");
+const otpVerified = ref(false);
+
+function onOtpInput(index, event) {
+  const value = event.target.value.replace(/\D/g, ""); // only digits
+  otpDigits[index] = value;
+  if (value && index < otpDigits.length - 1) {
+    nextTick(() => otpInputs.value[index + 1].focus());
+  }
+}
+
+function onOtpBackspace(index, event) {
+  if (!otpDigits[index] && index > 0) {
+    nextTick(() => otpInputs.value[index - 1].focus());
+  }
+}
+
+
 /* STATE */
 const step = ref("verify");
+const resendingOtp = ref(false);
 const identifier = ref("");
 const verifiedData = ref(null);
 const loading = ref(false);
@@ -233,14 +288,15 @@ async function verifyParticipant() {
   loading.value = true;
 
   try {
+    // ✅ Send phone_number instead of identifier
     const res = await axios.post(`/api/events/verify/${eventCode}`, {
-      identifier: identifier.value
+      phone_number: identifier.value
     });
 
     if (res.data.found) {
       verifiedData.value = {
         ...res.data.data,
-        identifier: identifier.value
+        phone_number: identifier.value
       };
       step.value = "verified";
       Swal.fire("Verified", "Hurray, we found you!", "success");
@@ -256,18 +312,15 @@ async function verifyParticipant() {
   }
 }
 
+
 /* CONFIRM */
 async function confirmParticipant() {
   loading.value = true;
 
   try {
-    const res = await axios.post(
-      `/api/events/confirm/${verifiedData.value.event_form_id}`,
-      {
-        phone_number: verifiedData.value.phone_number,
-        
-       }
-    );
+     const res = await axios.post(`/api/events/confirm/${eventCode}`, {
+      phone_number: identifier.value,
+    });
 
     Swal.fire("Confirmed", res.data.msg, "success");
     refreshPage();
@@ -290,16 +343,16 @@ async function submitForm() {
   const payload = {
     event_id: eventId.value,
     ...formData.value,
-    user_id: user_id.value
+    user_id: user_id.value,
   };
-
-  console.log("Submitting payload:", payload); //  console log
 
   try {
     await axios.post(`/api/events/saveregistration/${eventCode}`, payload);
 
-    Swal.fire("Success", "Registration completed", "success");
-    refreshPage();
+    Swal.fire("Success", "Registration completed. Enter your OTP next.", "success");
+    
+    // Switch to OTP step
+    step.value = "otp";
   } catch (err) {
     console.error(err);
     Swal.fire("Error", "Registration failed", "error");
@@ -307,6 +360,81 @@ async function submitForm() {
     loading.value = false;
   }
 }
+
+
+
+
+//SUBMIT OTP
+async function submitOtp() {
+  const otp_code = otpDigits.join("");
+  if (!otp_code || otp_code.length !== 6) {
+    otpMessage.value = "Enter the full 6-digit OTP";
+    otpVerified.value = false;
+    return;
+  }
+
+  loading.value = true;
+  otpMessage.value = "";
+
+  try {
+    const res = await axios.get(`/api/events/events/${eventCode}/verify-otp`, {
+      params: {
+        phone_number: identifier.value,
+        otp_code,
+      },
+    });
+
+    if (res.data.verified) {
+      otpMessage.value = res.data.msg || "OTP verified successfully";
+      otpVerified.value = true;
+      step.value = "verified"; // move to verified step
+      verifiedData.value = {
+        full_name: res.data.full_name || verifiedData.value?.full_name,
+        phone_number: identifier.value,
+        ...res.data,
+      };
+    } else {
+      otpMessage.value = res.data.msg || "Verification failed";
+      otpVerified.value = false;
+    }
+  } catch (err) {
+    otpMessage.value = err.response?.data?.msg || "OTP verification failed";
+    otpVerified.value = false;
+  } finally {
+    loading.value = false;
+  }
+}
+
+
+async function resendOtp() {
+  if (!identifier.value) {
+    Swal.fire("Error", "Phone number not available to resend OTP", "error");
+    return;
+  }
+
+  resendingOtp.value = true;
+
+  try {
+    const res = await axios.post(`/api/events/${eventCode}/resend-otp`, {
+      phone_number: identifier.value,
+    });
+
+    Swal.fire("Success", res.data.msg || "OTP resent successfully", "success");
+
+    // Optionally, reset OTP fields
+    otpDigits.forEach((_, i) => (otpDigits[i] = ""));
+    otpVerified.value = false;
+    otpMessage.value = "";
+  } catch (err) {
+    Swal.fire("Error", err.response?.data?.msg || "Failed to resend OTP", "error");
+  } finally {
+    resendingOtp.value = false;
+  }
+}
+
+
+
+
 </script>
 
 <style scoped>
@@ -317,4 +445,21 @@ async function submitForm() {
 .card {
   border-radius: 10px;
 }
+
+.otp-inputs {
+  gap: 8px;
+}
+.otp-box {
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.otp-box:focus {
+  outline: none;
+  border-color: #1081e0;
+  box-shadow: 0 0 5px rgba(16,129,224,0.5);
+}
+
 </style>

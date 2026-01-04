@@ -20,6 +20,9 @@ class EventFormSubmission extends Model
         'phone_number',    // new
         'email_address',   // new
         'gender',
+        'otp_code',
+        'otp_expires_at',
+        'verified',
 
     ];
 
