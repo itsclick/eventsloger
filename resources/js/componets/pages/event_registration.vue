@@ -299,7 +299,7 @@ async function verifyParticipant() {
         phone_number: identifier.value
       };
       step.value = "verified";
-      Swal.fire("Verified", "Hurray, we found you!", "success");
+      // Swal.fire("Verified", "Hurray, we found you!", "success");
     } else {
       step.value = "register";
       await loadRegistrationForm();
