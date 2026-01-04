@@ -349,7 +349,7 @@ async function submitForm() {
   try {
     await axios.post(`/api/events/saveregistration/${eventCode}`, payload);
 
-    Swal.fire("Success", "Registration completed. Enter your OTP next.", "success");
+    Swal.fire("Success", "Enter the OTP to complete registration.", "success");
     
     // Switch to OTP step
     step.value = "otp";
