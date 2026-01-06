@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cors' => \Fruitcake\Cors\HandleCors::class,
         'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
+        'allow.iframe' => \App\Http\Middleware\AllowIframe::class,
 
 
     ];

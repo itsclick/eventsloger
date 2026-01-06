@@ -20,5 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/{any}', function () {
     return view('welcome');
-})->where("any",".*");
+})->where("any", ".*");
 
+// Route::middleware('allow.iframe')->group(function () {
+//     Route::get('/publicform/{eventCode}', function ($eventCode) {
+//         return view('app'); // your Vue SPA entry
+//     });
+// });
