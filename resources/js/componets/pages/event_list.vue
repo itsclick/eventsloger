@@ -103,6 +103,15 @@
 
         </table>
       </div>
+        <nav class="dataTable-pagination">
+          <Pagination :data="eventpaginate"  :limit="2" @pagination-change-page="fetchallevents">
+            <template #prev-nav>Previous</template>
+            <template #next-nav>Next</template>
+          </Pagination>
+
+              Showing {{ eventpaginate.current_page }} of {{ eventpaginate.last_page }}
+              Pages [ {{ eventpaginate.total }} Entries ]
+</nav>
     </div>
   </div>
 </template>
@@ -119,7 +128,7 @@ const { getAccess } = storeToRefs(menustore());
 
 
 // Access events from Pinia store
-const { eventlist } = storeToRefs(useViewDataStore());
+const { eventlist,eventpaginate } = storeToRefs(useViewDataStore());
 const { fetchallevents, editEventbtn,eventformbtn } = useViewDataStore();
 const { deleteEvent } = useDeleteDataStore();
 

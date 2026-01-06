@@ -1,25 +1,5 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect all requests to index.php if not a real file or folder
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
-
-# Prevent directory listing
-Options -Indexes
-
-# Protect .env file
-<FilesMatch "^\.env$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-
-
-<!-- <IfModule mod_rewrite.c>
-    RewriteEngine On
-
-    RewriteRule ^(.*)$ public/$1 [L]
-</IfModule> -->
