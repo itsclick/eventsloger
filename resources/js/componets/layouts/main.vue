@@ -472,7 +472,7 @@
 
 
   //functions below
-  const {  memberstats } = useMemberStores();
+  const {   } = useMemberStores();
  //viariables here
   const {  user_id,menupermission,getURL,getAccess,username } =storeToRefs(menustore());
   //functions below
@@ -484,7 +484,7 @@
    
 
   
-    memberstats();
+   
    
     usermenumain();
     
