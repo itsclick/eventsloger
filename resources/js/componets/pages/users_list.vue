@@ -40,20 +40,25 @@
           </div>
   
           <!-- Pagination -->
-          <nav class="dataTable-pagination">
-            <Pagination :data="duesmodelpgin" :limit="5" @pagination-change-page="getallusersmodel" class="dataTable-pagination">
-              <template #prev-nav>
-                <span>Previous</span>
-              </template>
-              <template #next-nav>
-                <span>Next</span>
-              </template>
-            </Pagination>
-            Showing {{ duesmodelpgin.current_page }} of {{ duesmodelpgin.last_page }} Pages [ {{ duesmodelpgin.total }} Entries ]
-          </nav>
+           
+       <nav class="dataTable-pagination">
+  <Pagination :data="duesmodelpgin"  :limit="2" @pagination-change-page="getallusers">
+    <template #prev-nav>Previous</template>
+    <template #next-nav>Next</template>
+  </Pagination>
+
+  Showing {{ duesmodelpgin.current_page }} of {{ duesmodelpgin.last_page }}
+  Pages [ {{ duesmodelpgin.total }} Entries ]
+</nav>
+
+
+
+
         </div>
       </div>
     </div>
+
+
   </template>
   
   <script setup>
@@ -81,11 +86,10 @@
     router.push(`/permission/${id}`);
   }
   
-  // Computed property to check if "users" menu has menu_add permission
-//   const canAdd= computed(() => {
-//     const menu = menus.find(m => m.menu_name.toLowerCase() === 'users');
-//     return menu ? menu.menu_add === 1 : false;
-//   });
+
+
+
+  
   </script>
   
   <style scoped>

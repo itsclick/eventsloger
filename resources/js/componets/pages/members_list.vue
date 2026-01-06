@@ -114,44 +114,7 @@ getmembers();
 
 
 
-// const router = useRouter();
-// const memberStore = useMemberStores();
 
-// onMounted(()=>{
-//     memberStore.getmembers();
-// })
-
-
-
-//PAY DUES BUTTON
-// const padduesbtn = (id) => {
-//     router.push('/paddues/' + id);
-// }
-
-
-
-// DELETE Members
-// const deletemember = (id) => {
-//     Swal.fire({
-//       title: "Are you sure?",
-//       text: "Do you really want to delete?",
-//       icon: "warning",
-//       showCancelButton: true,
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         axios.delete(`/api/membership/deletemember/${id}`).then((resp) => {
-//           if (resp.data.okay) {
-            
-//             toast.fire({
-//               icon: "success",
-//               title: resp.data.msg,
-//             });
-//             memberStore.getmembers();
-//           }
-//         });
-//       }
-//     });
-//   };
 
 
 </script>
