@@ -5,7 +5,7 @@
           <h4 class="card-title">Listing System Users</h4>
           <div class="col text-end">
              <router-link to="adduser">
-                <button type="button" class="btn btn-success">+ Add user</button>
+                <button type="button" class="btn btn-success">+ Add system user</button>
               </router-link>
           </div>
           </div>
